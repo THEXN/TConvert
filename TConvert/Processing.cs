@@ -193,16 +193,17 @@ namespace TConvert {
 			if (!silent)
 				Console.WriteLine();
 			#if !(CONSOLE)
-			Console.Write("Press enter to continue...");
+            Console.Write("按回车继续...");
+
 			#endif
-		}
+        }
 
-		#endregion
-		//=========== PROGRESS ===========
-		#region Progress
+        #endregion
+        //=========== PROGRESS ===========
+        #region Progress
 
-		/**<summary>Updates the progress on the console.</summary>*/
-		private static void WriteTimeAndPercentage(string message, bool finished = false) {
+        /**<summary>Updates the progress on the console.</summary>*/
+        private static void WriteTimeAndPercentage(string message, bool finished = false) {
 			if (!silent) {
 				// Prepare to overwrite the leftover message
 				int oldX = Console.CursorLeft;
@@ -212,11 +213,11 @@ namespace TConvert {
 					Console.SetCursorPosition(consoleX, consoleY);
 				}
 
-				string timeStr = (finished ? "Total " : "");
-				timeStr += "Time: " + (DateTime.Now - startTime).ToString(@"m\:ss");
-				timeStr += " (" + (int)(totalFiles == 0 ? 0 : ((double)filesCompleted / totalFiles * 100)) + "%)";
-				timeStr += "      ";
-				Console.WriteLine(timeStr);
+                string timeStr = (finished ? "总计 " : "");
+                timeStr += "时间: " + (DateTime.Now - startTime).ToString(@"m\:ss");
+                timeStr += " (" + (int)(totalFiles == 0 ? 0 : ((double)filesCompleted / totalFiles * 100)) + "%)";
+                timeStr += "      ";
+                Console.WriteLine(timeStr);
 				Console.Write(message);
 
 				// Overwrite the leftover message
@@ -327,33 +328,33 @@ namespace TConvert {
 				if (!silent) {
 					ConsoleColor oldColor = Console.ForegroundColor;
 					Console.ForegroundColor = ConsoleColor.Red;
-					Console.WriteLine("Errors or warnings were encountered during the process.\nSee '" + Path.GetFileName(ErrorLogger.LogPath) + "' for more details.");
-					Console.ForegroundColor = oldColor;
+                    Console.WriteLine("在过程中遇到错误或警告。\n请查看 '" + Path.GetFileName(ErrorLogger.LogPath) + "' 以获取更多详情。");
+                    Console.ForegroundColor = oldColor;
 				}
 			}
 		}
 		/**<summary>Logs an error.</summary>*/
 		public static void LogError(string message, string reason = "") {
 			errorLog.Add(new LogError(false, message, reason));
-			ErrorLogger.WriteLine("Error: " + message);
-			if (reason != String.Empty)
-				ErrorLogger.WriteLine("    Reason: " + reason);
-		}
-		/**<summary>Logs a warning.</summary>*/
-		public static void LogWarning(string message, string reason = "") {
+            ErrorLogger.WriteLine("错误: " + message);
+            if (reason != String.Empty)
+                ErrorLogger.WriteLine("    原因: " + reason);
+        }
+        /**<summary>Logs a warning.</summary>*/
+        public static void LogWarning(string message, string reason = "") {
 			errorLog.Add(new LogError(true, message, reason));
-			ErrorLogger.WriteLine("Warning: " + message);
-			if (reason != String.Empty)
-				ErrorLogger.WriteLine("    Reason: " + reason);
-		}
+            ErrorLogger.WriteLine("警告: " + message);
+            if (reason != String.Empty)
+                ErrorLogger.WriteLine("    原因: " + reason);
+        }
 
-		#endregion
-		//========== PROCESSING ==========
-		#region Processing
+        #endregion
+        //========== PROCESSING ==========
+        #region Processing
 
 
-		/**<summary>Checks if the extension is that of an audio file.</summary>*/
-		public static bool IsAudioExtension(string ext) {
+        /**<summary>Checks if the extension is that of an audio file.</summary>*/
+        public static bool IsAudioExtension(string ext) {
 			switch (ext) {
 			case ".wav":
 			case ".mp3":
@@ -397,10 +398,10 @@ namespace TConvert {
 			foreach (Script script in scripts) {
 				RunScript(script, false);
 			}
-			FinishProgress("Finished Processing Files");
-		}
-		/**<summary>Processes console files.</summary>*/
-		public static void ProcessFiles(ProcessModes mode, string[] inputFiles, string[] outputFiles) {
+            FinishProgress("文件处理完成");
+        }
+        /**<summary>Processes console files.</summary>*/
+        public static void ProcessFiles(ProcessModes mode, string[] inputFiles, string[] outputFiles) {
 			List<PathPair> files = new List<PathPair>();
 
 			// Allow processing of directories too
@@ -484,16 +485,16 @@ namespace TConvert {
 					RestoreFile2(pair.Input, pair.Output);
 				}
 			}
-			
-			FinishProgress("Finished Processing Files");
-		}
 
-		#endregion
-		//========== EXTRACTING ==========
-		#region Extracting
+            FinishProgress("文件处理完成");
+        }
 
-		/**<summary>Extracts all files in a directory.</summary>*/
-		public static void ExtractAll(string inputDirectory, string outputDirectory, bool includeImages, bool includeSounds, bool includeFonts, bool includeWaveBank) {
+        #endregion
+        //========== EXTRACTING ==========
+        #region Extracting
+
+        /**<summary>Extracts all files in a directory.</summary>*/
+        public static void ExtractAll(string inputDirectory, string outputDirectory, bool includeImages, bool includeSounds, bool includeFonts, bool includeWaveBank) {
 			string[] files = Helpers.FindAllFiles(inputDirectory);
 			totalFiles += files.Length;
 
@@ -503,36 +504,36 @@ namespace TConvert {
 					extractCount++;
 			}
 
-			FinishProgress("Finished Extracting " + extractCount + " Files");
-		}
-		/**<summary>Extracts a single file.</summary>*/
-		public static void ExtractSingleFile(string inputFile, string outputFile) {
+            FinishProgress("提取了 " + extractCount + " 个文件");
+        }
+        /**<summary>Extracts a single file.</summary>*/
+        public static void ExtractSingleFile(string inputFile, string outputFile) {
 			totalFiles += 1;
 			
 			ExtractFile(inputFile, Path.GetDirectoryName(inputFile), Path.GetDirectoryName(outputFile));
 
-			FinishProgress("Finished Extracting");
-		}
-		/**<summary>Extracts drop files.</summary>*/
-		private static void ExtractDropFiles(string[] inputFiles) {
+            FinishProgress("提取完成");
+        }
+        /**<summary>Extracts drop files.</summary>*/
+        private static void ExtractDropFiles(string[] inputFiles) {
 
 			foreach (string inputFile in inputFiles) {
 				string inputDirectory = Path.GetDirectoryName(inputFile);
 				ExtractFile(inputFile, inputDirectory, inputDirectory);
 			}
 
-			UpdateProgress("Finished Extracting", true);
-		}
-		/**<summary>Extracts a file.</summary>*/
-		private static bool ExtractFile(string inputFile, string inputDirectory, string outputDirectory, bool includeImages = true, bool includeSounds = true, bool includeFonts = true, bool includeWaveBank = true) {
+            UpdateProgress("提取完成", true);
+        }
+        /**<summary>Extracts a file.</summary>*/
+        private static bool ExtractFile(string inputFile, string inputDirectory, string outputDirectory, bool includeImages = true, bool includeSounds = true, bool includeFonts = true, bool includeWaveBank = true) {
 			bool extracted = false;
 			try {
 				string outputFile = Helpers.GetOutputPath(inputFile, inputDirectory, outputDirectory);
 				string ext = Path.GetExtension(inputFile).ToLower();
 				if ((ext == ".xnb" && (includeImages || includeSounds || includeFonts)) || (ext == ".xwb" && includeWaveBank)) {
-					UpdateProgress("Extracting: " + Helpers.GetRelativePath(inputFile, inputDirectory), ext == ".xwb");
-				}
-				if (ext == ".xnb" && (includeImages || includeSounds || includeFonts)) {
+                    UpdateProgress("正在提取: " + Helpers.GetRelativePath(inputFile, inputDirectory), ext == ".xwb");
+                }
+                if (ext == ".xnb" && (includeImages || includeSounds || includeFonts)) {
 					Helpers.CreateDirectorySafe(Path.GetDirectoryName(outputFile));
 					if (XnbExtractor.Extract(inputFile, outputFile, true, includeImages, includeSounds, includeFonts))
 						extracted = true;
@@ -543,27 +544,35 @@ namespace TConvert {
 						extracted = true;
 				}
 			}
-			catch (UnauthorizedAccessException ex) {
-				LogError("Extracting: " + inputFile, "Unauthorized access (" + ex.Message + ")");
-			}
-			catch (FileNotFoundException ex) {
-				LogError("Extracting: " + inputFile, "File not found (" + ex.Message + ")");
-			}
-			catch (DirectoryNotFoundException ex) {
-				LogError("Extracting: " + inputFile, "Directory not found (" + ex.Message + ")");
-			}
-			catch (IOException ex) {
-				LogError("Extracting: " + inputFile, "IO error (" + ex.Message + ")");
-			}
-			catch (XnbException ex) {
-				LogError("Extracting: " + inputFile, "Xnb error (" + ex.Message + ")");
-			}
-			catch (ThreadAbortException) { }
+            catch (UnauthorizedAccessException ex)
+            {
+                LogError("正在提取: " + inputFile, "未授权访问 (" + ex.Message + ")");
+            }
+            catch (FileNotFoundException ex)
+            {
+                LogError("正在提取: " + inputFile, "文件未找到 (" + ex.Message + ")");
+            }
+            catch (DirectoryNotFoundException ex)
+            {
+                LogError("正在提取: " + inputFile, "目录未找到 (" + ex.Message + ")");
+            }
+            catch (IOException ex)
+            {
+                LogError("正在提取: " + inputFile, "IO 错误 (" + ex.Message + ")");
+            }
+            catch (XnbException ex)
+            {
+                LogError("正在提取: " + inputFile, "Xnb 错误 (" + ex.Message + ")");
+            }
+
+            catch (ThreadAbortException) { }
 			catch (ThreadInterruptedException) { }
-			catch (Exception ex) {
-				LogError("Extracting: " + inputFile, ex.GetType().ToString().Split('.').Last() + " (" + ex.Message + ")");
-			}
-			filesCompleted++;
+            catch (Exception ex)
+            {
+                LogError("正在提取: " + inputFile, ex.GetType().ToString().Split('.').Last() + " (" + ex.Message + ")");
+            }
+
+            filesCompleted++;
 			return extracted;
 		}
 		/**<summary>Extracts a file with different parameters.</summary>*/
@@ -572,9 +581,9 @@ namespace TConvert {
 			try {
 				string ext = Path.GetExtension(inputFile).ToLower();
 				if (ext == ".xnb" || ext == ".xwb") {
-					UpdateProgress("Extracting: " + Path.GetFileName(inputFile), ext == ".xwb");
-				}
-				if (ext == ".xnb") {
+                    UpdateProgress("正在提取: " + Path.GetFileName(inputFile), ext == ".xwb");
+                }
+                if (ext == ".xnb") {
 					Helpers.CreateDirectorySafe(Path.GetDirectoryName(outputFile));
 					if (XnbExtractor.Extract(inputFile, outputFile, true, true, true, true))
 						extracted = true;
@@ -585,67 +594,81 @@ namespace TConvert {
 						extracted = true;
 				}
 			}
-			catch (UnauthorizedAccessException ex) {
-				LogError("Extracting: " + inputFile, "Unauthorized access (" + ex.Message + ")");
-			}
-			catch (FileNotFoundException ex) {
-				LogError("Extracting: " + inputFile, "File not found (" + ex.Message + ")");
-			}
-			catch (DirectoryNotFoundException ex) {
-				LogError("Extracting: " + inputFile, "Directory not found (" + ex.Message + ")");
-			}
-			catch (IOException ex) {
-				LogError("Extracting: " + inputFile, "IO error (" + ex.Message + ")");
-			}
-			catch (XnbException ex) {
-				LogError("Extracting: " + inputFile, "Xnb error (" + ex.Message + ")");
-			}
-			catch (ThreadAbortException) { }
-			catch (ThreadInterruptedException) { }
-			catch (Exception ex) {
-				LogError("Extracting: " + inputFile, ex.GetType().ToString().Split('.').Last() + " (" + ex.Message + ")");
-			}
-			filesCompleted++;
+            catch (UnauthorizedAccessException ex)
+            {
+                LogError("提取: " + inputFile, "未经授权的访问 (" + ex.Message + ")");
+            }
+            catch (FileNotFoundException ex)
+            {
+                LogError("提取: " + inputFile, "文件未找到 (" + ex.Message + ")");
+            }
+            catch (DirectoryNotFoundException ex)
+            {
+                LogError("提取: " + inputFile, "目录未找到 (" + ex.Message + ")");
+            }
+            catch (IOException ex)
+            {
+                LogError("提取: " + inputFile, "IO 错误 (" + ex.Message + ")");
+            }
+            catch (XnbException ex)
+            {
+                LogError("提取: " + inputFile, "Xnb 错误 (" + ex.Message + ")");
+            }
+            catch (ThreadAbortException) { }
+            catch (ThreadInterruptedException) { }
+            catch (Exception ex)
+            {
+                LogError("提取: " + inputFile, ex.GetType().ToString().Split('.').Last() + " (" + ex.Message + ")");
+            }
+
+            filesCompleted++;
 			return extracted;
 		}
 
-		#endregion
-		//========== CONVERTING ==========
-		#region Converting
+        #endregion
+        //========== CONVERTING ==========
+        #region Converting
 
-		/**<summary>Converts all files in a directory.</summary>*/
-		public static void ConvertAll(string inputDirectory, string outputDirectory, bool includeImages, bool includeSounds) {
-			string[] files = Helpers.FindAllFiles(inputDirectory);
-			totalFiles += files.Length;
+        /**<summary>Converts all files in a directory.</summary>*/
+        public static void ConvertAll(string inputDirectory, string outputDirectory, bool includeImages, bool includeSounds)
+        {
+            string[] files = Helpers.FindAllFiles(inputDirectory);
+            totalFiles += files.Length;
 
-			int convertCount = 0;
-			foreach (string inputFile in files) {
-				if (ConvertFile(inputFile, inputDirectory, outputDirectory, includeImages, includeSounds))
-					convertCount++;
-			}
+            int convertCount = 0;
+            foreach (string inputFile in files)
+            {
+                if (ConvertFile(inputFile, inputDirectory, outputDirectory, includeImages, includeSounds))
+                    convertCount++;
+            }
 
-			FinishProgress("Finished Converting " + convertCount + " Files");
-		}
-		/**<summary>Converts a single file.</summary>*/
-		public static void ConvertSingleFile(string inputFile, string outputFile) {
-			totalFiles += 1;
-			
-			ConvertFile(inputFile, Path.GetDirectoryName(inputFile), Path.GetDirectoryName(outputFile));
+            FinishProgress("已完成转换 " + convertCount + " 个文件");
+        }
 
-			FinishProgress("Finished Converting");
-		}
-		/**<summary>Converts drop files.</summary>*/
-		private static void ConvertDropFiles(string[] inputFiles) {
+        /**<summary>转换单个文件。</summary>*/
+        public static void ConvertSingleFile(string inputFile, string outputFile)
+        {
+            totalFiles += 1;
 
-			foreach (string inputFile in inputFiles) {
-				string inputDirectory = Path.GetDirectoryName(inputFile);
-				ConvertFile(inputFile, inputDirectory, inputDirectory);
-			}
+            ConvertFile(inputFile, Path.GetDirectoryName(inputFile), Path.GetDirectoryName(outputFile));
 
-			UpdateProgress("Finished Converting", true);
-		}
-		/**<summary>Converts a file.</summary>*/
-		private static bool ConvertFile(string inputFile, string inputDirectory, string outputDirectory, bool includeImages = true, bool includeSounds = true) {
+            FinishProgress("已完成转换");
+        }
+
+        /**<summary>转换拖放的文件。</summary>*/
+        private static void ConvertDropFiles(string[] inputFiles)
+        {
+            foreach (string inputFile in inputFiles)
+            {
+                string inputDirectory = Path.GetDirectoryName(inputFile);
+                ConvertFile(inputFile, inputDirectory, inputDirectory);
+            }
+
+            UpdateProgress("已完成转换", true);
+        }
+
+        /**<summary>Converts a file.</summary>*/
+        private static bool ConvertFile(string inputFile, string inputDirectory, string outputDirectory, bool includeImages = true, bool includeSounds = true) {
 			bool converted = false;
 			try {
 				string outputFile = Helpers.GetOutputPath(inputFile, inputDirectory, outputDirectory);
@@ -664,30 +687,38 @@ namespace TConvert {
 						converted = true;
 				}
 			}
-			catch (UnauthorizedAccessException ex) {
-				LogError("Converting: " + inputFile, "Unauthorized access (" + ex.Message + ")");
-			}
-			catch (FileNotFoundException ex) {
-				LogError("Converting: " + inputFile, "File not found (" + ex.Message + ")");
-			}
-			catch (DirectoryNotFoundException ex) {
-				LogError("Converting: " + inputFile, "Directory not found (" + ex.Message + ")");
-			}
-			catch (IOException ex) {
-				LogError("Converting: " + inputFile, "IO error (" + ex.Message + ")");
-			}
-			catch (PngException ex) {
-				LogError("Converting: " + inputFile, "Png error (" + ex.Message + ")");
-			}
-			catch (WavException ex) {
-				LogError("Converting: " + inputFile, "Wav error (" + ex.Message + ")");
-			}
-			catch (ThreadAbortException) { }
-			catch (ThreadInterruptedException) { }
-			catch (Exception ex) {
-				LogError("Converting: " + inputFile, ex.GetType().ToString().Split('.').Last() + " (" + ex.Message + ")");
-			}
-			filesCompleted++;
+            catch (UnauthorizedAccessException ex)
+            {
+                LogError("转换: " + inputFile, "未经授权的访问 (" + ex.Message + ")");
+            }
+            catch (FileNotFoundException ex)
+            {
+                LogError("转换: " + inputFile, "文件未找到 (" + ex.Message + ")");
+            }
+            catch (DirectoryNotFoundException ex)
+            {
+                LogError("转换: " + inputFile, "目录未找到 (" + ex.Message + ")");
+            }
+            catch (IOException ex)
+            {
+                LogError("转换: " + inputFile, "IO 错误 (" + ex.Message + ")");
+            }
+            catch (PngException ex)
+            {
+                LogError("转换: " + inputFile, "Png 错误 (" + ex.Message + ")");
+            }
+            catch (WavException ex)
+            {
+                LogError("转换: " + inputFile, "Wav 错误 (" + ex.Message + ")");
+            }
+            catch (ThreadAbortException) { }
+            catch (ThreadInterruptedException) { }
+            catch (Exception ex)
+            {
+                LogError("转换: " + inputFile, ex.GetType().ToString().Split('.').Last() + " (" + ex.Message + ")");
+            }
+
+            filesCompleted++;
 			return converted;
 		}
 		/**<summary>Converts a file with different paramters.</summary>*/
@@ -709,30 +740,38 @@ namespace TConvert {
 						converted = true;
 				}
 			}
-			catch (UnauthorizedAccessException ex) {
-				LogError("Converting: " + inputFile, "Unauthorized access (" + ex.Message + ")");
-			}
-			catch (FileNotFoundException ex) {
-				LogError("Converting: " + inputFile, "File not found (" + ex.Message + ")");
-			}
-			catch (DirectoryNotFoundException ex) {
-				LogError("Converting: " + inputFile, "Directory not found (" + ex.Message + ")");
-			}
-			catch (IOException ex) {
-				LogError("Converting: " + inputFile, "IO error (" + ex.Message + ")");
-			}
-			catch (PngException ex) {
-				LogError("Converting: " + inputFile, "Png error (" + ex.Message + ")");
-			}
-			catch (WavException ex) {
-				LogError("Converting: " + inputFile, "Wav error (" + ex.Message + ")");
-			}
-			catch (ThreadAbortException) { }
-			catch (ThreadInterruptedException) { }
-			catch (Exception ex) {
-				LogError("Converting: " + inputFile, ex.GetType().ToString().Split('.').Last() + " (" + ex.Message + ")");
-			}
-			filesCompleted++;
+            catch (UnauthorizedAccessException ex)
+            {
+                LogError("转换: " + inputFile, "未经授权的访问 (" + ex.Message + ")");
+            }
+            catch (FileNotFoundException ex)
+            {
+                LogError("转换: " + inputFile, "文件未找到 (" + ex.Message + ")");
+            }
+            catch (DirectoryNotFoundException ex)
+            {
+                LogError("转换: " + inputFile, "目录未找到 (" + ex.Message + ")");
+            }
+            catch (IOException ex)
+            {
+                LogError("转换: " + inputFile, "IO 错误 (" + ex.Message + ")");
+            }
+            catch (PngException ex)
+            {
+                LogError("转换: " + inputFile, "Png 错误 (" + ex.Message + ")");
+            }
+            catch (WavException ex)
+            {
+                LogError("转换: " + inputFile, "Wav 错误 (" + ex.Message + ")");
+            }
+            catch (ThreadAbortException) { }
+            catch (ThreadInterruptedException) { }
+            catch (Exception ex)
+            {
+                LogError("转换: " + inputFile, ex.GetType().ToString().Split('.').Last() + " (" + ex.Message + ")");
+            }
+
+            filesCompleted++;
 			return converted;
 		}
 
@@ -742,9 +781,9 @@ namespace TConvert {
 
 		/**<summary>Loads and runs a script.</summary>*/
 		public static void RunScript(string inputScript) {
-			UpdateProgress("Loading Script...", true);
+            UpdateProgress("加载脚本...", true);
 
-			Script script = LoadScript(inputScript);
+            Script script = LoadScript(inputScript);
 
 			// Add up all the files and restores
 			totalFiles += script.Extracts.Count + script.Converts.Count;
@@ -759,17 +798,17 @@ namespace TConvert {
 				RunScript(script);
 			}
 			else {
-				FinishProgress("Finished Script");
-			}
-		}
+                FinishProgress("脚本完成");
+            }
+        }
 		/**<summary>Runs a a preloaded script.</summary>*/
 		public static void RunScript(Script script, bool final = true) {
 
 			int backupCount = 0;
 			foreach (PathPair backup in script.Backups) {
 				if (!Directory.Exists(backup.Input)) {
-					LogError("Backing Up: " + backup.Input, "Directory does not exist");
-					continue;
+                    LogError("备份: " + backup.Input, "目录不存在");
+                    continue;
 				}
 				string[] backupFiles = Helpers.FindAllFiles(backup.Input);
 
@@ -782,8 +821,8 @@ namespace TConvert {
 			int restoreCount = 0;
 			foreach (PathPair restore in script.Restores) {
 				if (!Directory.Exists(restore.Input)) {
-					LogError("Restoring: " + restore.Input, "Directory does not exist");
-					continue;
+                    LogError("恢复: " + restore.Input, "目录不存在");
+                    continue;
 				}
 				string[] restoreFiles = Helpers.FindAllFiles(restore.Input);
 				
@@ -804,538 +843,682 @@ namespace TConvert {
 				if (ConvertFile2(file.Input, file.Output, file.Compress))
 					convertCount++;
 			}
-			string message = "Finished ";
-			if (extractCount > 0) {
-				if (convertCount > 0)
-					message += "Extracting and Converting " + (extractCount + convertCount) + " Files";
-				else
-					message += "Extracting " + extractCount + " Files";
-			}
-			else if (convertCount > 0)
-				message += "Converting " + convertCount + " Files";
-			else if (restoreCount > 0)
-				message += "Restoring " + restoreCount + " Files";
-			else if (backupCount > 0)
-				message += "Backing Up " + backupCount + " Files";
-			else
-				message += "Script";
-			if (final)
+            string message = "完成 ";
+            if (extractCount > 0)
+            {
+                if (convertCount > 0)
+                    message += "提取和转换 " + (extractCount + convertCount) + " 个文件";
+                else
+                    message += "提取 " + extractCount + " 个文件";
+            }
+            else if (convertCount > 0)
+                message += "转换 " + convertCount + " 个文件";
+            else if (restoreCount > 0)
+                message += "恢复 " + restoreCount + " 个文件";
+            else if (backupCount > 0)
+                message += "备份 " + backupCount + " 个文件";
+            else
+                message += "脚本";
+
+            if (final)
 				FinishProgress(message);
 			else
 				UpdateProgress(message, true);
 		}
-		/**<summary>Loads a script.</summary>*/
-		public static Script LoadScript(string inputScript) {
-			List<PathPair> files = new List<PathPair>();
-			List<PathPair> backups = new List<PathPair>();
-			List<PathPair> restores = new List<PathPair>();
+        /**<summary>加载脚本。</summary>*/
+        public static Script LoadScript(string inputScript)
+        {
+            List<PathPair> files = new List<PathPair>();
+            List<PathPair> backups = new List<PathPair>();
+            List<PathPair> restores = new List<PathPair>();
 
-			try {
-				Directory.SetCurrentDirectory(Path.GetDirectoryName(inputScript));
-			}
-			catch (ThreadAbortException) { }
-			catch (ThreadInterruptedException) { }
-			catch (Exception ex) {
-				LogError("Setting working directory failed", ex.Message);
-				FinishProgress("Finished Script");
-				return null;
-			}
-			XmlDocument doc = new XmlDocument();
-			try {
-				doc.Load(inputScript);
-			}
-			catch (XmlException ex) {
-				LogError("Failed to parse script: " + inputScript, ex.Message);
-				FinishProgress("Finished Script");
-				return null;
-			}
-			catch (UnauthorizedAccessException ex) {
-				LogError("Reading Script: " + inputScript, "Unauthorized access (" + ex.Message + ")");
-				FinishProgress("Finished Script");
-				return null;
-			}
-			catch (FileNotFoundException ex) {
-				LogError("Reading Script: " + inputScript, "File not found (" + ex.Message + ")");
-				FinishProgress("Finished Script");
-				return null;
-			}
-			catch (DirectoryNotFoundException ex) {
-				LogError("Reading Script: " + inputScript, "Directory not found (" + ex.Message + ")");
-				FinishProgress("Finished Script");
-				return null;
-			}
-			catch (IOException ex) {
-				LogError("Reading Script: " + inputScript, "IO error (" + ex.Message + ")");
-				FinishProgress("Finished Script");
-				return null;
-			}
-			catch (ThreadAbortException) { }
-			catch (ThreadInterruptedException) { }
-			catch (Exception ex) {
-				LogError("Reading Script: " + inputScript, ex.GetType().ToString().Split('.').Last() + " (" + ex.Message + ")");
-				FinishProgress("Finished Script");
-				return null;
-			}
+            try
+            {
+                Directory.SetCurrentDirectory(Path.GetDirectoryName(inputScript));
+            }
+            catch (ThreadAbortException) { }
+            catch (ThreadInterruptedException) { }
+            catch (Exception ex)
+            {
+                LogError("设置工作目录失败", ex.Message);
+                FinishProgress("完成脚本");
+                return null;
+            }
 
-			XmlElement root = doc["TConvertScript"];
+            XmlDocument doc = new XmlDocument();
+            try
+            {
+                doc.Load(inputScript);
+            }
+            catch (XmlException ex)
+            {
+                LogError("解析脚本失败: " + inputScript, ex.Message);
+                FinishProgress("完成脚本");
+                return null;
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                LogError("读取脚本: " + inputScript, "未经授权的访问 (" + ex.Message + ")");
+                FinishProgress("完成脚本");
+                return null;
+            }
+            catch (FileNotFoundException ex)
+            {
+                LogError("读取脚本: " + inputScript, "文件未找到 (" + ex.Message + ")");
+                FinishProgress("完成脚本");
+                return null;
+            }
+            catch (DirectoryNotFoundException ex)
+            {
+                LogError("读取脚本: " + inputScript, "目录未找到 (" + ex.Message + ")");
+                FinishProgress("完成脚本");
+                return null;
+            }
+            catch (IOException ex)
+            {
+                LogError("读取脚本: " + inputScript, "IO 错误 (" + ex.Message + ")");
+                FinishProgress("完成脚本");
+                return null;
+            }
+            catch (ThreadAbortException) { }
+            catch (ThreadInterruptedException) { }
+            catch (Exception ex)
+            {
+                LogError("读取脚本: " + inputScript, ex.GetType().ToString().Split('.').Last() + " (" + ex.Message + ")");
+                FinishProgress("完成脚本");
+                return null;
+            }
 
-			// Find all the files and restores
-			if (root != null) {
-				LoadScriptFolder(root, files, backups, restores, "", "", compressImages, premultiplyAlpha, true);
-			}
-			else {
-				LogError("Reading Script", "No root element TConvertScript.");
-				FinishProgress("Finished Script");
-				return null;
-			}
+            XmlElement root = doc["TConvertScript"];
 
-			List<PathPair> extracts = new List<PathPair>();
-			List<PathPair> converts = new List<PathPair>();
-			foreach (PathPair file in files) {
-				string ext = Path.GetExtension(file.Input).ToLower();
-				switch (ext) {
-				case ".xnb": case ".xwb":
-					extracts.Add(file); break;
-				case ".png": case ".bmp": case ".jpg":
-					converts.Add(file); break;
-				default:
-					if (IsAudioExtension(ext))
-						converts.Add(file);
-					break;
-				}
-			}
-			
-			return new Script { Extracts=extracts, Converts=converts, Backups=backups, Restores=restores };
-		}
-		/**<summary>Loads a script folder or root element.</summary>*/
-		private static void LoadScriptFolder(XmlElement element, List<PathPair> files, List<PathPair> backups, List<PathPair> restores, string output, string path, bool compress, bool premultiply, bool isRoot = false) {
-			string newOutput = output;
-			bool newCompress = compress;
-			bool newPremultiply = premultiply;
-			XmlAttribute attribute;
-			foreach (XmlNode nextNode in element) {
-				XmlElement next = nextNode as XmlElement;
-				if (next == null)
-					continue;
-				switch (next.Name) {
-				case "Compress":
-					attribute = next.Attributes["Value"];
-					if (attribute != null) {
-						bool nextCompress;
-						if (bool.TryParse(attribute.InnerText, out nextCompress))
-							newCompress = nextCompress;
-						else
-							LogWarning("Reading Script", "Failed to parse Value attribute in Compress: '" + attribute.InnerText + "'.");
-					}
-					else {
-						LogWarning("Reading Script", "No Value attribute in Compress.");
-					}
-					break;
-				case "Premultiply":
-					attribute = next.Attributes["Value"];
-					if (attribute != null) {
-						bool nextPremultiply;
-						if (bool.TryParse(attribute.InnerText, out nextPremultiply))
-							newPremultiply = nextPremultiply;
-						else
-							LogWarning("Reading Script", "Failed to parse Value attribute in Premultiply: '" + attribute.InnerText + "'.");
-					}
-					else {
-						LogWarning("Reading Script", "No Value attribute in Premultiply.");
-					}
-					break;
-				case "Backup":
-					attribute = next.Attributes["Path"];
-					if (attribute != null) {
-						if (Helpers.IsPathValid(attribute.InnerText)) {
-							string nextPath;
-							if (path == string.Empty)
-								nextPath = attribute.InnerText;
-							else
-								nextPath = Path.Combine(path, attribute.InnerText);
-							backups.Add(new PathPair(nextPath, newOutput));
-						}
-						else {
-							LogWarning("Reading Script", "Invalid Path attribute in Backup: '" + attribute.InnerText + "'.");
-						}
-					}
-					else {
-						LogWarning("Reading Script", "No Path attribute in Backup.");
-					}
-					break;
-				case "Restore":
-					attribute = next.Attributes["Path"];
-					if (attribute != null) {
-						if (Helpers.IsPathValid(attribute.InnerText)) {
-							string nextPath;
-							if (path == string.Empty)
-								nextPath = attribute.InnerText;
-							else
-								nextPath = Path.Combine(path, attribute.InnerText);
-							restores.Add(new PathPair(nextPath, newOutput));
-						}
-						else {
-							LogWarning("Reading Script", "Invalid Path attribute in Restore: '" + attribute.InnerText + "'.");
-						}
-					}
-					else {
-						LogWarning("Reading Script", "No Path attribute in Restore.");
-					}
-					break;
-				case "Output":
-					attribute = next.Attributes["Path"];
-					if (attribute != null) {
-						if (Helpers.IsPathValid(attribute.InnerText)) {
-							if (output == string.Empty)
-								newOutput = attribute.InnerText;
-							else
-								newOutput = Path.Combine(output, attribute.InnerText);
-						}
-						else {
-							LogWarning("Reading Script", "Invalid Path attribute in Output: '" + attribute.InnerText + "'.");
-						}
-					}
-					else {
-						LogWarning("Reading Script", "No Path attribute in Output.");
-					}
-					break;
-				case "Folder":
-					attribute = next.Attributes["Path"];
-					if (attribute != null) {
-						if (Helpers.IsPathValid(attribute.InnerText)) {
-							string nextPath;
-							if (path == string.Empty)
-								nextPath = attribute.InnerText;
-							else
-								nextPath = Path.Combine(path, attribute.InnerText);
-							LoadScriptFolder(next, files, backups, restores, newOutput, nextPath, newCompress, newPremultiply);
-						}
-						else {
-							LogWarning("Reading Script", "Invalid Path attribute in Folder: '" + attribute.InnerText + "'.");
-						}
-					}
-					else {
-						LogWarning("Reading Script", "No Path attribute in Folder.");
-					}
-					break;
-				case "File":
-					attribute = next.Attributes["Path"];
-					if (attribute != null) {
-						if (Helpers.IsPathValid(attribute.InnerText)) {
-							string nextPath;
-							bool nextCompress = newCompress;
-							bool nextPremultiply = true;
-							if (path == string.Empty)
-								nextPath = attribute.InnerText;
-							else
-								nextPath = Path.Combine(path, attribute.InnerText);
-							attribute = next.Attributes["Compress"];
-							if (attribute != null) {
-								if (!bool.TryParse(attribute.InnerText, out nextCompress)) {
-									LogWarning("Reading Script", "Failed to parse Compress attribute in File: '" + attribute.InnerText + "'.");
-									nextCompress = newCompress;
-								}
-							}
-							attribute = next.Attributes["Premultiply"];
-							if (attribute != null) {
-								if (!bool.TryParse(attribute.InnerText, out nextPremultiply)) {
-									LogWarning("Reading Script", "Failed to parse Premultiply attribute in Out: '" + attribute.InnerText + "'.");
-									nextPremultiply = true;
-								}
-							}
-							attribute = next.Attributes["OutPath"];
-							if (attribute != null) {
-								if (Helpers.IsPathValid(attribute.InnerText)) {
-									string nextOutput;
-									if (newOutput == string.Empty)
-										nextOutput = Helpers.FixPathSafe(attribute.InnerText);
-									else
-										nextOutput = Path.Combine(newOutput, attribute.InnerText);
-									files.Add(new PathPair(nextPath, nextOutput, nextCompress, nextPremultiply));
-								}
-								else {
-									LogWarning("Reading Script", "Invalid OutPath attribute in File: '" + attribute.InnerText + "'."); ;
-								}
-							}
-							LoadScriptFile(next, files, newOutput, nextPath, nextCompress, nextPremultiply);
-						}
-						else {
-							LogWarning("Reading Script", "Invalid Path attribute in File: '" + attribute.InnerText + "'.");
-						}
-					}
-					else {
-						LogWarning("Reading Script", "No Path attribute in File.");
-					}
-					break;
-				default:
-					LogWarning("Reading Script", "Invalid element inside " + (isRoot ? "ConvertScript" : "Folder") + " '" + next.Name + "'.");
-					break;
-				}
-			}
-		}
-		/**<summary>Loads a script file.</summary>*/
-		private static void LoadScriptFile(XmlElement element, List<PathPair> files, string output, string path, bool compress, bool premultiply) {
-			string newOutput = output;
-			bool newCompress = compress;
-			bool newPremultiply = premultiply;
-			XmlAttribute attribute;
-			foreach (XmlNode nextNode in element) {
-				XmlElement next = nextNode as XmlElement;
-				if (next == null)
-					continue;
-				switch (next.Name) {
-				case "Compress":
-					attribute = next.Attributes["Value"];
-					if (attribute != null) {
-						bool nextCompress;
-						if (bool.TryParse(attribute.InnerText, out nextCompress))
-							newCompress = nextCompress;
-						else
-							LogWarning("Reading Script", "Failed to parse Value attribute in Compress: '" + attribute.InnerText + "'.");
-					}
-					else {
-						LogWarning("Reading Script", "No Value attribute in Compress.");
-					}
-					break;
-				case "Premultiply":
-					attribute = next.Attributes["Value"];
-					if (attribute != null) {
-						bool nextPremultiply;
-						if (bool.TryParse(attribute.InnerText, out nextPremultiply))
-							newPremultiply = nextPremultiply;
-						else
-							LogWarning("Reading Script", "Failed to parse Value attribute in Premultiply: '" + attribute.InnerText + "'.");
-					}
-					else {
-						LogWarning("Reading Script", "No Value attribute in Premultiply.");
-					}
-					break;
-				case "Output":
-					attribute = next.Attributes["Path"];
-					if (attribute != null) {
-						if (Helpers.IsPathValid(attribute.InnerText)) {
-							if (output == string.Empty)
-								newOutput = attribute.InnerText;
-							else
-								newOutput = Path.Combine(output, attribute.InnerText);
-						}
-						else {
-							LogWarning("Reading Script", "Invalid Path attribute in Output: '" + attribute.InnerText + "'.");
-						}
-					}
-					else {
-						LogWarning("Reading Script", "No Path attribute in Output.");
-					}
-					break;
-				case "Out":
-					attribute = next.Attributes["Path"];
-					if (attribute != null) {
-						if (Helpers.IsPathValid(attribute.InnerText)) {
-							string nextOutput;
-							bool nextCompress = newCompress;
-							bool nextPremultiply = newPremultiply;
-							if (newOutput == string.Empty)
-								nextOutput = attribute.InnerText;
-							else
-								nextOutput = Path.Combine(newOutput, attribute.InnerText);
-							attribute = next.Attributes["Compress"];
-							if (attribute != null) {
-								if (!bool.TryParse(attribute.InnerText, out nextCompress)) {
-									LogWarning("Reading Script", "Failed to parse Compress attribute in Out: '" + attribute.InnerText + "'.");
-									nextCompress = newCompress;
-								}
-							}
-							attribute = next.Attributes["Premultiply"];
-							if (attribute != null) {
-								if (!bool.TryParse(attribute.InnerText, out nextPremultiply)) {
-									LogWarning("Reading Script", "Failed to parse Premultiply attribute in Out: '" + attribute.InnerText + "'.");
-									nextPremultiply = newPremultiply;
-								}
-							}
-							files.Add(new PathPair(path, nextOutput, nextCompress, nextPremultiply));
-						}
-						else {
-							LogWarning("Reading Script", "Invalid Path attribute in Out: '" + attribute.InnerText + "'.");
-						}
-					}
-					else {
-						LogWarning("Reading Script", "No Path attribute in Out.");
-					}
-					break;
-				default:
-					LogWarning("Reading Script", "Invalid element inside File '" + next.Name + "'.");
-					break;
-				}
-			}
-		}
+            // 查找所有文件和恢复项
+            if (root != null)
+            {
+                LoadScriptFolder(root, files, backups, restores, "", "", compressImages, premultiplyAlpha, true);
+            }
+            else
+            {
+                LogError("读取脚本", "没有根元素 TConvertScript.");
+                FinishProgress("完成脚本");
+                return null;
+            }
 
-		#endregion
-		//============ BACKUP ============
-		#region Backup
+            List<PathPair> extracts = new List<PathPair>();
+            List<PathPair> converts = new List<PathPair>();
+            foreach (PathPair file in files)
+            {
+                string ext = Path.GetExtension(file.Input).ToLower();
+                switch (ext)
+                {
+                    case ".xnb":
+                    case ".xwb":
+                        extracts.Add(file); break;
+                    case ".png":
+                    case ".bmp":
+                    case ".jpg":
+                        converts.Add(file); break;
+                    default:
+                        if (IsAudioExtension(ext))
+                            converts.Add(file);
+                        break;
+                }
+            }
 
-		/**<summary>Backs up a directory.</summary>*/
-		public static void BackupFiles(string inputDirectory, string outputDirectory) {
-			string[] files = Helpers.FindAllFiles(inputDirectory);
-			totalFiles = files.Length;
+            return new Script { Extracts = extracts, Converts = converts, Backups = backups, Restores = restores };
+        }
 
-			foreach (string inputFile in files) {
-				BackupFile(inputFile, inputDirectory, outputDirectory);
-			}
+        /**<summary>加载脚本文件夹或根元素。</summary>*/
+        private static void LoadScriptFolder(XmlElement element, List<PathPair> files, List<PathPair> backups, List<PathPair> restores, string output, string path, bool compress, bool premultiply, bool isRoot = false)
+        {
+            string newOutput = output;
+            bool newCompress = compress;
+            bool newPremultiply = premultiply;
+            XmlAttribute attribute;
+            foreach (XmlNode nextNode in element)
+            {
+                XmlElement next = nextNode as XmlElement;
+                if (next == null)
+                    continue;
 
-			FinishProgress("Finished Backing Up " + files.Length + " Files");
-		}
-		/**<summary>Restores a directory.</summary>*/
-		public static void RestoreFiles(string inputDirectory, string outputDirectory) {
-			string[] files = Helpers.FindAllFiles(inputDirectory);
-			totalFiles = files.Length;
+                switch (next.Name)
+                {
+                    case "Compress":
+                        // 处理 "Compress" 元素
+                        attribute = next.Attributes["Value"];
+                        if (attribute != null)
+                        {
+                            bool nextCompress;
+                            if (bool.TryParse(attribute.InnerText, out nextCompress))
+                                newCompress = nextCompress;
+                            else
+                                LogWarning("读取脚本", "无法解析 Compress 元素中的 Value 属性: '" + attribute.InnerText + "'。");
+                        }
+                        else
+                        {
+                            LogWarning("读取脚本", "Compress 元素中没有 Value 属性。");
+                        }
+                        break;
+                    case "Premultiply":
+                        // 处理 "Premultiply" 元素
+                        attribute = next.Attributes["Value"];
+                        if (attribute != null)
+                        {
+                            bool nextPremultiply;
+                            if (bool.TryParse(attribute.InnerText, out nextPremultiply))
+                                newPremultiply = nextPremultiply;
+                            else
+                                LogWarning("读取脚本", "无法解析 Premultiply 元素中的 Value 属性: '" + attribute.InnerText + "'。");
+                        }
+                        else
+                        {
+                            LogWarning("读取脚本", "Premultiply 元素中没有 Value 属性。");
+                        }
+                        break;
+                    case "Backup":
+                        // 处理 "Backup" 元素
+                        attribute = next.Attributes["Path"];
+                        if (attribute != null)
+                        {
+                            if (Helpers.IsPathValid(attribute.InnerText))
+                            {
+                                string nextPath;
+                                if (path == string.Empty)
+                                    nextPath = attribute.InnerText;
+                                else
+                                    nextPath = Path.Combine(path, attribute.InnerText);
+                                backups.Add(new PathPair(nextPath, newOutput));
+                            }
+                            else
+                            {
+                                LogWarning("读取脚本", "Backup 元素中的 Path 属性无效: '" + attribute.InnerText + "'。");
+                            }
+                        }
+                        else
+                        {
+                            LogWarning("读取脚本", "Backup 元素中没有 Path 属性。");
+                        }
+                        break;
+                    case "Restore":
+                        // 处理 "Restore" 元素
+                        attribute = next.Attributes["Path"];
+                        if (attribute != null)
+                        {
+                            if (Helpers.IsPathValid(attribute.InnerText))
+                            {
+                                string nextPath;
+                                if (path == string.Empty)
+                                    nextPath = attribute.InnerText;
+                                else
+                                    nextPath = Path.Combine(path, attribute.InnerText);
+                                restores.Add(new PathPair(nextPath, newOutput));
+                            }
+                            else
+                            {
+                                LogWarning("读取脚本", "Restore 元素中的 Path 属性无效: '" + attribute.InnerText + "'。");
+                            }
+                        }
+                        else
+                        {
+                            LogWarning("读取脚本", "Restore 元素中没有 Path 属性。");
+                        }
+                        break;
+                    case "Output":
+                        // 处理 "Output" 元素
+                        attribute = next.Attributes["Path"];
+                        if (attribute != null)
+                        {
+                            if (Helpers.IsPathValid(attribute.InnerText))
+                            {
+                                if (output == string.Empty)
+                                    newOutput = attribute.InnerText;
+                                else
+                                    newOutput = Path.Combine(output, attribute.InnerText);
+                            }
+                            else
+                            {
+                                LogWarning("读取脚本", "Output 元素中的 Path 属性无效: '" + attribute.InnerText + "'。");
+                            }
+                        }
+                        else
+                        {
+                            LogWarning("读取脚本", "Output 元素中没有 Path 属性。");
+                        }
+                        break;
+                    case "Folder":
+                        // 处理 "Folder" 元素
+                        attribute = next.Attributes["Path"];
+                        if (attribute != null)
+                        {
+                            if (Helpers.IsPathValid(attribute.InnerText))
+                            {
+                                string nextPath;
+                                if (path == string.Empty)
+                                    nextPath = attribute.InnerText;
+                                else
+                                    nextPath = Path.Combine(path, attribute.InnerText);
+                                LoadScriptFolder(next, files, backups, restores, newOutput, nextPath, newCompress, newPremultiply);
+                            }
+                            else
+                            {
+                                LogWarning("读取脚本", "Folder 元素中的 Path 属性无效: '" + attribute.InnerText + "'。");
+                            }
+                        }
+                        else
+                        {
+                            LogWarning("读取脚本", "Folder 元素中没有 Path 属性。");
+                        }
+                        break;
+                    case "File":
+                        // 处理 "File" 元素
+                        attribute = next.Attributes["Path"];
+                        if (attribute != null)
+                        {
+                            if (Helpers.IsPathValid(attribute.InnerText))
+                            {
+                                string nextPath;
+                                bool nextCompress = newCompress;
+                                bool nextPremultiply = true;
+                                if (path == string.Empty)
+                                    nextPath = attribute.InnerText;
+                                else
+                                    nextPath = Path.Combine(path, attribute.InnerText);
+                                attribute = next.Attributes["Compress"];
+                                if (attribute != null)
+                                {
+                                    if (!bool.TryParse(attribute.InnerText, out nextCompress))
+                                    {
+                                        LogWarning("读取脚本", "无法解析 Compress 元素中的 Compress 属性: '" + attribute.InnerText + "'。");
+                                        nextCompress = newCompress;
+                                    }
+                                }
+                                attribute = next.Attributes["Premultiply"];
+                                if (attribute != null)
+                                {
+                                    if (!bool.TryParse(attribute.InnerText, out nextPremultiply))
+                                    {
+                                        LogWarning("读取脚本", "无法解析 Premultiply 元素中的 Premultiply 属性: '" + attribute.InnerText + "'。");
+                                        nextPremultiply = true;
+                                    }
+                                }
+                                attribute = next.Attributes["OutPath"];
+                                if (attribute != null)
+                                {
+                                    if (Helpers.IsPathValid(attribute.InnerText))
+                                    {
+                                        string nextOutput;
+                                        if (newOutput == string.Empty)
+                                            nextOutput = Helpers.FixPathSafe(attribute.InnerText);
+                                        else
+                                            nextOutput = Path.Combine(newOutput, attribute.InnerText);
+                                        files.Add(new PathPair(nextPath, nextOutput, nextCompress, nextPremultiply));
+                                    }
+                                    else
+                                    {
+                                        LogWarning("读取脚本", "File 元素中的 OutPath 属性无效: '" + attribute.InnerText + "'。");
+                                    }
+                                }
+                                LoadScriptFile(next, files, newOutput, nextPath, nextCompress, nextPremultiply);
+                            }
+                            else
+                            {
+                                LogWarning("读取脚本", "File 元素中的 Path 属性无效: '" + attribute.InnerText + "'。");
+                            }
+                        }
+                        else
+                        {
+                            LogWarning("读取脚本", "File 元素中没有 Path 属性。");
+                        }
+                        break;
+                    default:
+                        LogWarning("读取脚本", "无效的元素出现在 " + (isRoot ? "ConvertScript" : "Folder") + " 中: '" + next.Name + "'。");
+                        break;
+                }
+            }
+        }
 
-			int restoreCount = 0;
-			foreach (string inputFile in files) {
-				if (RestoreFile(inputFile, inputDirectory, outputDirectory))
-					restoreCount++;
-			}
-			
-			FinishProgress("Finished Restoring " + restoreCount + " Files");
-		}
-		/**<summary>Backs up a file.</summary>*/
-		private static bool BackupFile(string inputFile, string inputDirectory, string outputDirectory) {
-			bool backedUp = false;
-			try {
-				UpdateProgress("Backing Up: " + Helpers.GetRelativePath(inputFile, inputDirectory));
-				
-				string outputFile = Helpers.GetOutputPath(inputFile, inputDirectory, outputDirectory);
-				Helpers.CreateDirectorySafe(Path.GetDirectoryName(outputFile));
-				File.Copy(inputFile, outputFile, true);
-				backedUp = true;
-			}
-			catch (UnauthorizedAccessException ex) {
-				LogError("Backing up: " + inputFile, "Unauthorized access (" + ex.Message + ")");
-			}
-			catch (FileNotFoundException ex) {
-				LogError("Backing up: " + inputFile, "File not found (" + ex.Message + ")");
-			}
-			catch (DirectoryNotFoundException ex) {
-				LogError("Backing up: " + inputFile, "Directory not found (" + ex.Message + ")");
-			}
-			catch (IOException ex) {
-				LogError("Backing up: " + inputFile, "IO error (" + ex.Message + ")");
-			}
-			catch (ThreadAbortException) { }
-			catch (ThreadInterruptedException) { }
-			catch (Exception ex) {
-				LogError("Backing up: " + inputFile, ex.GetType().ToString().Split('.').Last() + " (" + ex.Message + ")");
-			}
-			filesCompleted++;
-			return backedUp;
-		}
-		/**<summary>Backs up a file with different parameters.</summary>*/
-		private static bool BackupFile2(string inputFile, string outputFile) {
-			bool backedUp = false;
-			try {
-				UpdateProgress("Backing Up: " + Path.GetFileName(inputFile));
-				
-				Helpers.CreateDirectorySafe(Path.GetDirectoryName(outputFile));
-				File.Copy(inputFile, outputFile, true);
-				backedUp = true;
-			}
-			catch (UnauthorizedAccessException ex) {
-				LogError("Backing up: " + inputFile, "Unauthorized access (" + ex.Message + ")");
-			}
-			catch (FileNotFoundException ex) {
-				LogError("Backing up: " + inputFile, "File not found (" + ex.Message + ")");
-			}
-			catch (DirectoryNotFoundException ex) {
-				LogError("Backing up: " + inputFile, "Directory not found (" + ex.Message + ")");
-			}
-			catch (IOException ex) {
-				LogError("Backing up: " + inputFile, "IO error (" + ex.Message + ")");
-			}
-			catch (ThreadAbortException) { }
-			catch (ThreadInterruptedException) { }
-			catch (Exception ex) {
-				LogError("Backing up: " + inputFile, ex.GetType().ToString().Split('.').Last() + " (" + ex.Message + ")");
-			}
-			filesCompleted++;
-			return backedUp;
-		}
-		/**<summary>Restores a file.</summary>*/
-		private static bool RestoreFile(string inputFile, string inputDirectory, string outputDirectory) {
-			bool filedCopied = false;
-			try {
-				UpdateProgress("Restoring: " + Helpers.GetRelativePath(inputFile, inputDirectory));
-				
-				string outputFile = Helpers.GetOutputPath(inputFile, inputDirectory, outputDirectory);
-				bool shouldCopy = true;
-				Helpers.CreateDirectorySafe(Path.GetDirectoryName(outputFile));
-				if (File.Exists(outputFile)) {
-					FileInfo info1 = new FileInfo(inputFile);
-					FileInfo info2 = new FileInfo(outputFile);
-					shouldCopy = info1.LastWriteTime != info2.LastWriteTime || info1.Length != info2.Length;
-				}
-				if (shouldCopy) {
-					File.Copy(inputFile, outputFile, true);
-					filedCopied = true;
-				}
-			}
-			catch (UnauthorizedAccessException ex) {
-				LogError("Restoring: " + inputFile, "Unauthorized access (" + ex.Message + ")");
-			}
-			catch (FileNotFoundException ex) {
-				LogError("Restoring: " + inputFile, "File not found (" + ex.Message + ")");
-			}
-			catch (DirectoryNotFoundException ex) {
-				LogError("Restoring: " + inputFile, "Directory not found (" + ex.Message + ")");
-			}
-			catch (IOException ex) {
-				LogError("Restoring: " + inputFile, "IO error (" + ex.Message + ")");
-			}
-			catch (ThreadAbortException) { }
-			catch (ThreadInterruptedException) { }
-			catch (Exception ex) {
-				LogError("Restoring: " + inputFile, ex.GetType().ToString().Split('.').Last() + " (" + ex.Message + ")");
-			}
-			filesCompleted++;
-			return filedCopied;
-		}
-		/**<summary>Restores a file with different parameters.</summary>*/
-		private static bool RestoreFile2(string inputFile, string outputFile) {
-			bool filedCopied = false;
-			try {
-				UpdateProgress("Restoring: " + Path.GetFileName(inputFile));
-				
-				bool shouldCopy = true;
-				Helpers.CreateDirectorySafe(Path.GetDirectoryName(outputFile));
-				if (File.Exists(outputFile)) {
-					FileInfo info1 = new FileInfo(inputFile);
-					FileInfo info2 = new FileInfo(outputFile);
-					shouldCopy = info1.LastWriteTime != info2.LastWriteTime || info1.Length != info2.Length;
-				}
-				if (shouldCopy) {
-					File.Copy(inputFile, outputFile, true);
-					filedCopied = true;
-				}
-			}
-			catch (UnauthorizedAccessException ex) {
-				LogError("Restoring: " + inputFile, "Unauthorized access (" + ex.Message + ")");
-			}
-			catch (FileNotFoundException ex) {
-				LogError("Restoring: " + inputFile, "File not found (" + ex.Message + ")");
-			}
-			catch (DirectoryNotFoundException ex) {
-				LogError("Restoring: " + inputFile, "Directory not found (" + ex.Message + ")");
-			}
-			catch (IOException ex) {
-				LogError("Restoring: " + inputFile, "IO error (" + ex.Message + ")");
-			}
-			catch (ThreadAbortException) { }
-			catch (ThreadInterruptedException) { }
-			catch (Exception ex) {
-				LogError("Restoring: " + inputFile, ex.GetType().ToString().Split('.').Last() + " (" + ex.Message + ")");
-			}
-			filesCompleted++;
-			return filedCopied;
-		}
+        /**<summary>加载脚本文件。</summary>*/
+        private static void LoadScriptFile(XmlElement element, List<PathPair> files, string output, string path, bool compress, bool premultiply)
+        {
+            string newOutput = output;
+            bool newCompress = compress;
+            bool newPremultiply = premultiply;
+            XmlAttribute attribute;
 
-		#endregion
-	}
+            // 遍历所有子元素
+            foreach (XmlNode nextNode in element)
+            {
+                XmlElement next = nextNode as XmlElement;
+                if (next == null)
+                    continue;
+
+                switch (next.Name)
+                {
+                    case "Compress":
+                        // 处理 "Compress" 元素
+                        attribute = next.Attributes["Value"];
+                        if (attribute != null)
+                        {
+                            bool nextCompress;
+                            if (bool.TryParse(attribute.InnerText, out nextCompress))
+                                newCompress = nextCompress;
+                            else
+                                LogWarning("读取脚本", "无法解析 Compress 元素中的 Value 属性: '" + attribute.InnerText + "'。");
+                        }
+                        else
+                        {
+                            LogWarning("读取脚本", "Compress 元素中没有 Value 属性。");
+                        }
+                        break;
+
+                    case "Premultiply":
+                        // 处理 "Premultiply" 元素
+                        attribute = next.Attributes["Value"];
+                        if (attribute != null)
+                        {
+                            bool nextPremultiply;
+                            if (bool.TryParse(attribute.InnerText, out nextPremultiply))
+                                newPremultiply = nextPremultiply;
+                            else
+                                LogWarning("读取脚本", "无法解析 Premultiply 元素中的 Value 属性: '" + attribute.InnerText + "'。");
+                        }
+                        else
+                        {
+                            LogWarning("读取脚本", "Premultiply 元素中没有 Value 属性。");
+                        }
+                        break;
+
+                    case "Output":
+                        // 处理 "Output" 元素
+                        attribute = next.Attributes["Path"];
+                        if (attribute != null)
+                        {
+                            if (Helpers.IsPathValid(attribute.InnerText))
+                            {
+                                if (output == string.Empty)
+                                    newOutput = attribute.InnerText;
+                                else
+                                    newOutput = Path.Combine(output, attribute.InnerText);
+                            }
+                            else
+                            {
+                                LogWarning("读取脚本", "Output 元素中的 Path 属性无效: '" + attribute.InnerText + "'。");
+                            }
+                        }
+                        else
+                        {
+                            LogWarning("读取脚本", "Output 元素中没有 Path 属性。");
+                        }
+                        break;
+
+                    case "Out":
+                        // 处理 "Out" 元素
+                        attribute = next.Attributes["Path"];
+                        if (attribute != null)
+                        {
+                            if (Helpers.IsPathValid(attribute.InnerText))
+                            {
+                                string nextOutput;
+                                bool nextCompress = newCompress;
+                                bool nextPremultiply = newPremultiply;
+
+                                // 如果没有给定输出路径，则使用当前输出路径
+                                if (newOutput == string.Empty)
+                                    nextOutput = attribute.InnerText;
+                                else
+                                    nextOutput = Path.Combine(newOutput, attribute.InnerText);
+
+                                // 处理 Compress 和 Premultiply 属性
+                                attribute = next.Attributes["Compress"];
+                                if (attribute != null)
+                                {
+                                    if (!bool.TryParse(attribute.InnerText, out nextCompress))
+                                    {
+                                        LogWarning("读取脚本", "无法解析 Out 元素中的 Compress 属性: '" + attribute.InnerText + "'。");
+                                        nextCompress = newCompress;
+                                    }
+                                }
+
+                                attribute = next.Attributes["Premultiply"];
+                                if (attribute != null)
+                                {
+                                    if (!bool.TryParse(attribute.InnerText, out nextPremultiply))
+                                    {
+                                        LogWarning("读取脚本", "无法解析 Out 元素中的 Premultiply 属性: '" + attribute.InnerText + "'。");
+                                        nextPremultiply = newPremultiply;
+                                    }
+                                }
+
+                                // 添加新的 PathPair 到文件列表
+                                files.Add(new PathPair(path, nextOutput, nextCompress, nextPremultiply));
+                            }
+                            else
+                            {
+                                LogWarning("读取脚本", "Out 元素中的 Path 属性无效: '" + attribute.InnerText + "'。");
+                            }
+                        }
+                        else
+                        {
+                            LogWarning("读取脚本", "Out 元素中没有 Path 属性。");
+                        }
+                        break;
+
+                    default:
+                        // 如果元素名称无效，记录警告
+                        LogWarning("读取脚本", "File 元素中包含无效的子元素: '" + next.Name + "'。");
+                        break;
+                }
+            }
+        }
+
+
+        #endregion
+        //============ BACKUP ============
+        #region Backup
+
+        /**<summary>备份一个目录中的所有文件。</summary>*/
+        public static void BackupFiles(string inputDirectory, string outputDirectory)
+        {
+            string[] files = Helpers.FindAllFiles(inputDirectory);  // 获取输入目录下的所有文件
+            totalFiles = files.Length;  // 更新文件总数
+
+            foreach (string inputFile in files)
+            {
+                BackupFile(inputFile, inputDirectory, outputDirectory);  // 备份每个文件
+            }
+
+            FinishProgress("已完成备份 " + files.Length + " 个文件");  // 完成备份后显示进度
+        }
+        /**<summary>恢复一个目录中的所有文件。</summary>*/
+        public static void RestoreFiles(string inputDirectory, string outputDirectory)
+        {
+            string[] files = Helpers.FindAllFiles(inputDirectory);  // 获取输入目录下的所有文件
+            totalFiles = files.Length;  // 更新文件总数
+
+            int restoreCount = 0;  // 计数恢复的文件数量
+            foreach (string inputFile in files)
+            {
+                if (RestoreFile(inputFile, inputDirectory, outputDirectory))  // 尝试恢复每个文件
+                    restoreCount++;  // 如果恢复成功，增加计数
+            }
+
+            FinishProgress("已完成恢复 " + restoreCount + " 个文件");  // 完成恢复后显示进度
+        }
+
+        /**<summary>备份一个文件。</summary>*/
+        private static bool BackupFile(string inputFile, string inputDirectory, string outputDirectory)
+        {
+            bool backedUp = false;  // 定义备份状态变量
+            try
+            {
+                UpdateProgress("正在备份: " + Helpers.GetRelativePath(inputFile, inputDirectory));  // 更新进度
+
+                string outputFile = Helpers.GetOutputPath(inputFile, inputDirectory, outputDirectory);  // 获取目标路径
+                Helpers.CreateDirectorySafe(Path.GetDirectoryName(outputFile));  // 创建目标目录（如果不存在）
+                File.Copy(inputFile, outputFile, true);  // 复制文件，允许覆盖
+                backedUp = true;  // 标记备份成功
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                LogError("备份失败: " + inputFile, "未授权访问 (" + ex.Message + ")");  // 错误处理：未授权访问
+            }
+            catch (FileNotFoundException ex)
+            {
+                LogError("备份失败: " + inputFile, "文件未找到 (" + ex.Message + ")");  // 错误处理：文件未找到
+            }
+            catch (DirectoryNotFoundException ex)
+            {
+                LogError("备份失败: " + inputFile, "目录未找到 (" + ex.Message + ")");  // 错误处理：目录未找到
+            }
+            catch (IOException ex)
+            {
+                LogError("备份失败: " + inputFile, "IO 错误 (" + ex.Message + ")");  // 错误处理：IO 错误
+            }
+            catch (ThreadAbortException) { }
+            catch (ThreadInterruptedException) { }
+            catch (Exception ex)
+            {
+                LogError("备份失败: " + inputFile, ex.GetType().ToString().Split('.').Last() + " (" + ex.Message + ")");  // 捕获其他异常
+            }
+            filesCompleted++;  // 增加已完成文件计数
+            return backedUp;  // 返回备份是否成功
+        }
+
+        /**<summary>使用不同的参数备份一个文件。</summary>*/
+        private static bool BackupFile2(string inputFile, string outputFile)
+        {
+            bool backedUp = false;  // 定义备份状态变量
+            try
+            {
+                UpdateProgress("正在备份: " + Path.GetFileName(inputFile));  // 更新进度
+
+                Helpers.CreateDirectorySafe(Path.GetDirectoryName(outputFile));  // 创建目标目录（如果不存在）
+                File.Copy(inputFile, outputFile, true);  // 复制文件，允许覆盖
+                backedUp = true;  // 标记备份成功
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                LogError("备份失败: " + inputFile, "未授权访问 (" + ex.Message + ")");  // 错误处理：未授权访问
+            }
+            catch (FileNotFoundException ex)
+            {
+                LogError("备份失败: " + inputFile, "文件未找到 (" + ex.Message + ")");  // 错误处理：文件未找到
+            }
+            catch (DirectoryNotFoundException ex)
+            {
+                LogError("备份失败: " + inputFile, "目录未找到 (" + ex.Message + ")");  // 错误处理：目录未找到
+            }
+            catch (IOException ex)
+            {
+                LogError("备份失败: " + inputFile, "IO 错误 (" + ex.Message + ")");  // 错误处理：IO 错误
+            }
+            catch (ThreadAbortException) { }
+            catch (ThreadInterruptedException) { }
+            catch (Exception ex)
+            {
+                LogError("备份失败: " + inputFile, ex.GetType().ToString().Split('.').Last() + " (" + ex.Message + ")");  // 捕获其他异常
+            }
+            filesCompleted++;  // 增加已完成文件计数
+            return backedUp;  // 返回备份是否成功
+        }
+
+        /**<summary>恢复一个文件。</summary>*/
+        private static bool RestoreFile(string inputFile, string inputDirectory, string outputDirectory)
+        {
+            bool filedCopied = false;  // 定义文件复制状态变量
+            try
+            {
+                UpdateProgress("正在恢复: " + Helpers.GetRelativePath(inputFile, inputDirectory));  // 更新进度
+
+                string outputFile = Helpers.GetOutputPath(inputFile, inputDirectory, outputDirectory);  // 获取目标路径
+                bool shouldCopy = true;
+                Helpers.CreateDirectorySafe(Path.GetDirectoryName(outputFile));  // 创建目标目录（如果不存在）
+                if (File.Exists(outputFile))
+                {  // 如果目标文件存在，检查文件是否需要复制
+                    FileInfo info1 = new FileInfo(inputFile);
+                    FileInfo info2 = new FileInfo(outputFile);
+                    shouldCopy = info1.LastWriteTime != info2.LastWriteTime || info1.Length != info2.Length;  // 如果文件有更新或大小不同，则需要复制
+                }
+                if (shouldCopy)
+                {
+                    File.Copy(inputFile, outputFile, true);  // 复制文件，允许覆盖
+                    filedCopied = true;  // 标记文件已复制
+                }
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                LogError("恢复失败: " + inputFile, "未授权访问 (" + ex.Message + ")");  // 错误处理：未授权访问
+            }
+            catch (FileNotFoundException ex)
+            {
+                LogError("恢复失败: " + inputFile, "文件未找到 (" + ex.Message + ")");  // 错误处理：文件未找到
+            }
+            catch (DirectoryNotFoundException ex)
+            {
+                LogError("恢复失败: " + inputFile, "目录未找到 (" + ex.Message + ")");  // 错误处理：目录未找到
+            }
+            catch (IOException ex)
+            {
+                LogError("恢复失败: " + inputFile, "IO 错误 (" + ex.Message + ")");  // 错误处理：IO 错误
+            }
+            catch (ThreadAbortException) { }
+            catch (ThreadInterruptedException) { }
+            catch (Exception ex)
+            {
+                LogError("恢复失败: " + inputFile, ex.GetType().ToString().Split('.').Last() + " (" + ex.Message + ")");  // 捕获其他异常
+            }
+            filesCompleted++;  // 增加已完成文件计数
+            return filedCopied;  // 返回文件是否成功恢复
+        }
+
+        /**<summary>使用不同的参数恢复一个文件。</summary>*/
+        private static bool RestoreFile2(string inputFile, string outputFile)
+        {
+            bool filedCopied = false;  // 定义文件复制状态变量
+            try
+            {
+                UpdateProgress("正在恢复: " + Path.GetFileName(inputFile));  // 更新进度
+
+                bool shouldCopy = true;
+                Helpers.CreateDirectorySafe(Path.GetDirectoryName(outputFile));  // 创建目标目录（如果不存在）
+                if (File.Exists(outputFile))
+                {  // 如果目标文件存在，检查文件是否需要复制
+                    FileInfo info1 = new FileInfo(inputFile);
+                    FileInfo info2 = new FileInfo(outputFile);
+                    shouldCopy = info1.LastWriteTime != info2.LastWriteTime || info1.Length != info2.Length;  // 如果文件有更新或大小不同，则需要复制
+                }
+                if (shouldCopy)
+                {
+                    File.Copy(inputFile, outputFile, true);  // 复制文件，允许覆盖
+                    filedCopied = true;  // 标记文件已复制
+                }
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                LogError("恢复失败: " + inputFile, "未授权访问 (" + ex.Message + ")");  // 错误处理：未授权访问
+            }
+            catch (FileNotFoundException ex)
+            {
+                LogError("恢复失败: " + inputFile, "文件未找到 (" + ex.Message + ")");  // 错误处理：文件未找到
+            }
+            catch (DirectoryNotFoundException ex)
+            {
+                LogError("恢复失败: " + inputFile, "目录未找到 (" + ex.Message + ")");  // 错误处理：目录未找到
+            }
+            catch (IOException ex)
+            {
+                LogError("恢复失败: " + inputFile, "IO 错误 (" + ex.Message + ")");  // 错误处理：IO 错误
+            }
+            catch (ThreadAbortException) { }
+            catch (ThreadInterruptedException) { }
+            catch (Exception ex)
+            {
+                LogError("恢复失败: " + inputFile, ex.GetType().ToString().Split('.').Last() + " (" + ex.Message + ")");  // 捕获其他异常
+            }
+            filesCompleted++;  // 增加已完成文件计数
+            return filedCopied;  // 返回文件是否成功恢复
+        }
+
+
+        #endregion
+    }
 }

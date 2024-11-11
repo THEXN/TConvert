@@ -54,9 +54,9 @@ namespace TConvert.Util {
 			IntPtr h = LoadLibrary(dllPath);
 			if (h == IntPtr.Zero) {
 				Exception e = new Win32Exception();
-				throw new DllNotFoundException("Unable to load library: " + dllPath, e);
-			}
-		}
+                throw new DllNotFoundException("无法加载库: " + dllPath, e);
+            }
+        }
 
 		#endregion
 		//============ NATIVE ============

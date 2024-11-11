@@ -57,9 +57,8 @@ namespace TConvert.Extract {
 
 		public int PeekBits(int bitCount) {
 			if (bitCount > remainingBits) {
-				throw new ArgumentException("Not enough bits: required "
-						+ bitCount + " has " + remainingBits);
-			}
+                throw new ArgumentException("位数不足: 需要 " + bitCount + " 位，但只有 " + remainingBits + " 位");
+            }
 
 			return (int)((uint)bitBuffer >> (32 - bitCount));
 		}

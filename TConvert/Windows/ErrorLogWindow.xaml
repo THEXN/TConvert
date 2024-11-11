@@ -6,25 +6,25 @@
         xmlns:local="clr-namespace:TConvert.Windows"
         mc:Ignorable="d"
         Height="350" Width="500" WindowStartupLocation="CenterOwner" 
-        Title="Error Log" Icon="/Resources/Icons/AppError.ico" ShowInTaskbar="False" MinWidth="500" MinHeight="350">
+        Title="错误日志" Icon="/Resources/Icons/AppError.ico" ShowInTaskbar="False" MinWidth="500" MinHeight="350">
     <Window.TaskbarItemInfo>
         <TaskbarItemInfo/>
     </Window.TaskbarItemInfo>
     <Grid>
         <Label Margin="18,15,18,0" VerticalAlignment="Top" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Padding="0" Grid.ColumnSpan="2">
-            <TextBlock TextWrapping="WrapWithOverflow" Text="Errors and/or warnings occurred during last operation" HorizontalAlignment="Left" VerticalAlignment="Top" FontWeight="Bold"/>
+            <TextBlock TextWrapping="WrapWithOverflow" Text="上次操作期间发生了错误和/或警告" HorizontalAlignment="Left" VerticalAlignment="Top" FontWeight="Bold"/>
         </Label>
 
         <Border Margin="18,43,18,54" BorderThickness="1" BorderBrush="#FF828790" Grid.ColumnSpan="2">
             <ScrollViewer Background="#FFFBFBFB" ScrollViewer.VerticalScrollBarVisibility="Visible" Padding="4,1" HorizontalScrollBarVisibility="Auto">
-                <TextBlock x:Name="textBlockMessage" Text="Log" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                <TextBlock x:Name="textBlockMessage" Text="日志" HorizontalAlignment="Left" VerticalAlignment="Top"/>
             </ScrollViewer>
         </Border>
 
         <Rectangle Fill="#FFF0F0F0" Height="49" Margin="0" VerticalAlignment="Bottom" StrokeThickness="0" Grid.ColumnSpan="2"/>
         <Separator Background="#FFDFDFDF" Margin="0,0,0,48" VerticalAlignment="Bottom"/>
-        
-        <Button Content="Open Log File" HorizontalAlignment="Left" Margin="18,0,0,12" VerticalAlignment="Bottom" Width="128" Focusable="False" IsTabStop="False" Click="OnOpenLogFile"/>
-        <Button Content="Close" HorizontalAlignment="Right" Margin="0,0,18,12" VerticalAlignment="Bottom" Width="80" Focusable="False" IsTabStop="False" IsCancel="True" IsDefault="True" Grid.Column="1"/>
+
+        <Button Content="打开日志文件" HorizontalAlignment="Left" Margin="18,0,0,12" VerticalAlignment="Bottom" Width="128" Focusable="False" IsTabStop="False" Click="OnOpenLogFile"/>
+        <Button Content="关闭" HorizontalAlignment="Right" Margin="0,0,18,12" VerticalAlignment="Bottom" Width="80" Focusable="False" IsTabStop="False" IsCancel="True" IsDefault="True" Grid.Column="1"/>
     </Grid>
 </Window>

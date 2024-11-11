@@ -254,8 +254,8 @@ namespace TConvert.Extract {
 
 					int nextBlockType = buffer.ReadBits(3);
 					if (nextBlockType > 3) {
-						throw new Exception("Invalid block type: " + nextBlockType);
-					}
+                        throw new Exception("无效的块类型: " + nextBlockType);
+                    }
 
 					blockType = (LzxBlockType)nextBlockType;
 
@@ -316,8 +316,8 @@ namespace TConvert.Extract {
 						R2 = (int)(lo | ml << 8 | mh << 16 | hi << 24);
 						break;
 					default:
-						throw new Exception("Unknown block type " + blockType);
-					}
+                            throw new Exception("未知的块类型 " + blockType);
+                    }
 				}
 
 				/* buffer exhaustion check */
@@ -579,8 +579,8 @@ namespace TConvert.Extract {
 						break;
 
 					default:
-						throw new Exception("Invalid block type: " + blockType);
-					}
+                            throw new Exception("无效的块类型: " + blockType);
+                    }
 				}
 			}
 

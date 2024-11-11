@@ -67,47 +67,44 @@ namespace TConvert {
 			}
 		}
 
-		#endregion
-		//========== CONSTANTS ===========
-		#region Constants
+        #endregion
+        //========== CONSTANTS ===========
+        #region Constants
 
-		/**<summary>The collection of command line options.</summary>*/
-		private static readonly Dictionary<ArgTypes, OptionInfo> Options = new Dictionary<ArgTypes, OptionInfo>() {
-			{ ArgTypes.Input,	new OptionInfo(ProcessInput, "Input", "Specify input files & folders.", "filepaths", "-i", "--input") },
-			{ ArgTypes.Output,	new OptionInfo(ProcessOutput, "Output", "Specify output files & folders.", "filepaths", "-o", "--output") },
-			#if !(CONSOLE)
-			{ ArgTypes.Console,	new OptionInfo(ProcessConsole, "Console", "Don't display a progress window.", null, "-C", "--Console") },
-			#endif
-			{ ArgTypes.Extract,	new OptionInfo(ProcessExtract, "Extract", "Sets the mode to extract.", null, "-e", "--extract") },
-			{ ArgTypes.Convert,	new OptionInfo(ProcessConvert, "Convert", "Sets the mode to convert.", null, "-c", "--convert") },
-			{ ArgTypes.Backup,	new OptionInfo(ProcessBackup, "Backup", "Sets the mode to backup.", null, "-b", "--backup") },
-			{ ArgTypes.Restore,	new OptionInfo(ProcessRestore, "Restore", "Sets the mode to restore.", null, "-r", "--restore") },
-			{ ArgTypes.Script,	new OptionInfo(ProcessScript, "Script", "Sets the mode to run script.", null, "-x", "--script") },
+        /**<summary>The collection of command line options.</summary>*/
+        private static readonly Dictionary<ArgTypes, OptionInfo> Options = new Dictionary<ArgTypes, OptionInfo>() {
+    { ArgTypes.Input,    new OptionInfo(ProcessInput, "输入", "指定输入文件和文件夹。", "文件路径", "-i", "--input") },
+    { ArgTypes.Output,   new OptionInfo(ProcessOutput, "输出", "指定输出文件和文件夹。", "文件路径", "-o", "--output") },
+    #if !(CONSOLE)
+    { ArgTypes.Console,  new OptionInfo(ProcessConsole, "控制台", "不显示进度窗口。", null, "-C", "--Console") },
+    #endif
+    { ArgTypes.Extract,  new OptionInfo(ProcessExtract, "提取", "设置为提取模式。", null, "-e", "--extract") },
+    { ArgTypes.Convert,  new OptionInfo(ProcessConvert, "转换", "设置为转换模式。", null, "-c", "--convert") },
+    { ArgTypes.Backup,   new OptionInfo(ProcessBackup, "备份", "设置为备份模式。", null, "-b", "--backup") },
+    { ArgTypes.Restore,  new OptionInfo(ProcessRestore, "恢复", "设置为恢复模式。", null, "-r", "--restore") },
+    { ArgTypes.Script,   new OptionInfo(ProcessScript, "脚本", "设置为运行脚本模式。", null, "-x", "--script") },
 
-			{ ArgTypes.Help,	new OptionInfo(ProcessHelp, "Help", "Shows this help information.", null, "-h", "--help") },
-			//{ ArgTypes.Log,		new ArgInfo(ProcessLog, "Log", "Specify a log file path after this option.", "filename", "-l", "--log") },
-			{ ArgTypes.Silent,	new OptionInfo(ProcessSilent, "Silent", "No console output will be produced.", null, "-s", "--silent") },
-			
-			#if !(CONSOLE)
-			{ ArgTypes.AutoClose,new OptionInfo(ProcessAutoClose, "Auto-Close", "Auto-closes the progress window when done.", null, "-a", "--auto-close") },
-			{ ArgTypes.KeepOpen,new OptionInfo(ProcessKeepOpen, "Keep Open", "Keeps open the progress window when done.", null, "-k", "--keep-open") },
+    { ArgTypes.Help,     new OptionInfo(ProcessHelp, "帮助", "显示帮助信息。", null, "-h", "--help") },
+    { ArgTypes.Silent,   new OptionInfo(ProcessSilent, "静默", "不输出控制台信息。", null, "-s", "--silent") },
+    
+    #if !(CONSOLE)
+    { ArgTypes.AutoClose,new OptionInfo(ProcessAutoClose, "自动关闭", "操作完成后自动关闭进度窗口。", null, "-a", "--auto-close") },
+    { ArgTypes.KeepOpen,new OptionInfo(ProcessKeepOpen, "保持打开", "操作完成后保持进度窗口打开。", null, "-k", "--keep-open") },
+    #endif
+    
+    { ArgTypes.Compress, new OptionInfo(ProcessCompress, "压缩", "图像将被压缩。", null, "-ic", "--compress") },
+    { ArgTypes.DontCompress, new OptionInfo(ProcessDontCompress, "不压缩", "图像将不会被压缩。", null, "-dc", "--dont-compress") },
+    { ArgTypes.Premultiply, new OptionInfo(ProcessPremultiply, "预乘", "RGB将按Alpha通道值进行预乘。", null, "-pr", "--premult") },
+    { ArgTypes.DontPremultiply, new OptionInfo(ProcessDontPremultiply, "不预乘", "RGB将不被修改。", null, "-dp", "--dont-premult") },
+};
 
-			//{ ArgTypes.AutoCloseDef,new OptionInfo(ProcessAutoCloseDefault, "Auto-Close Default", "Sets the default close setting to auto-close.", null, "-ad", "--auto-close-def") },
-			//{ ArgTypes.KeepOpenDef,new OptionInfo(ProcessKeepOpenDefault, "Keep Open Default", "Sets the default close setting to keep open.", null, "-kd", "--keep-open-def") }
-			#endif
-			
-			{ ArgTypes.Compress,new OptionInfo(ProcessCompress, "Compress", "Images will be compressed.", null, "-ic", "--compress") },
-			{ ArgTypes.DontCompress,new OptionInfo(ProcessDontCompress, "Don't Compress", "Images will not be compressed.", null, "-dc", "--dont-compress") },
-			{ ArgTypes.Premultiply, new OptionInfo(ProcessPremultiply, "Premultiply", "RGB will be multiplied by alpha.", null, "-pr", "--premult") },
-			{ ArgTypes.DontPremultiply, new OptionInfo(ProcessDontPremultiply, "Don't Premultiply", "RGB will not be modified.", null, "-dp", "--dont-premult") },
-		};
 
-		#endregion
-		//=========== MEMBERS ============
-		#region Members
+        #endregion
+        //=========== MEMBERS ============
+        #region Members
 
-		/**<summary>Arguments that have already been passed.</summary>*/
-		private static ArgTypes passedArgs = ArgTypes.None;
+        /**<summary>Arguments that have already been passed.</summary>*/
+        private static ArgTypes passedArgs = ArgTypes.None;
 		/**<summary>The last argument we're in. Used to wait for input.</summary>*/
 		private static ArgTypes lastArg = ArgTypes.None;
 		/**<summary>The current TConvert Mode. None equals any.</summary>*/
@@ -156,29 +153,37 @@ namespace TConvert {
 		private static void Log(string message) {
 			Log(ConsoleColor.Gray, message);
 		}
-		/**<summary>Logs an error message and sets error to true.</summary>*/
-		private static void LogError(string message) {
-			Log(ConsoleColor.Red, "Error: " + message);
-			error = true;
-		}
-		/**<summary>Logs a warning message.</summary>*/
-		private static void LogWarning(string message) {
-			Log(ConsoleColor.Yellow, "Warning: " + message);
-		}
-		/**<summary>Logs that a mode has already been specified.</summary>*/
-		private static void LogModeAlreadySpecified(ArgTypes argType) {
-			LogError("TConvert mode already specified as " +
-				Options[argMode].Name + " " + Options[argMode].OptionsToString() + ". " +
-				"Cannot specify option " + Options[argType].Name + " (" +
-				Options[argType].OptionsToString() + ").");
-		}
-		/**<summary>Logs that an option has already been used.</summary>*/
-		private static void LogOptionAlreadySpecified(ArgTypes argType) {
-			LogError(Options[argMode].Name + " option (" +
-				Options[argMode].OptionsToString() + ") already specified.");
-		}
-		/**<summary>Writes the log to the console.</summary>*/
-		private static void WriteLog() {
+        /**<summary>Logs an error message and sets error to true.</summary>*/
+        private static void LogError(string message)
+        {
+            Log(ConsoleColor.Red, "错误: " + message); // 将 "Error: " 翻译为 "错误: "
+            error = true;
+        }
+
+        /**<summary>记录警告信息。</summary>*/
+        private static void LogWarning(string message)
+        {
+            Log(ConsoleColor.Yellow, "警告: " + message); // 将 "Warning: " 翻译为 "警告: "
+        }
+
+        /**<summary>记录模式已被指定的信息。</summary>*/
+        private static void LogModeAlreadySpecified(ArgTypes argType)
+        {
+            LogError("TConvert 模式已指定为 " +
+                Options[argMode].Name + " " + Options[argMode].OptionsToString() + ". " +
+                "无法指定选项 " + Options[argType].Name + " (" +
+                Options[argType].OptionsToString() + ")。"); // 将 "mode already specified" 和 "Cannot specify option" 翻译为中文
+        }
+
+        /**<summary>记录选项已被使用的信息。</summary>*/
+        private static void LogOptionAlreadySpecified(ArgTypes argType)
+        {
+            LogError(Options[argMode].Name + " 选项 (" +
+                Options[argMode].OptionsToString() + ") 已经被指定。"); // 将 "option already specified" 翻译为中文
+        }
+
+        /**<summary>Writes the log to the console.</summary>*/
+        private static void WriteLog() {
 			#if !(CONSOLE)
 			Console.WriteLine();
 			#endif
@@ -197,8 +202,8 @@ namespace TConvert {
 
 		/**<summary>Parses the command line arguments. This is basically the console entry point.</summary>*/
 		public static void ParseCommand(string[] args) {
-			Log(ConsoleColor.White, "Starting TConvert...");
-			for (int i = 0; i < args.Length && !error; i++) {
+            Log(ConsoleColor.White, "正在启动 TConvert..."); // 将 "Starting TConvert..." 翻译为 "正在启动 TConvert..."
+            for (int i = 0; i < args.Length && !error; i++) {
 				ArgTypes argType = ParseArgument(args[i]);
 				passedArgs |= argType;
 				if (argType >= ArgTypes.Extract && argType <= ArgTypes.Script) {
@@ -256,69 +261,90 @@ namespace TConvert {
 
 		/**<summary>Final processing of the command after parsing.</summary>*/
 		private static void ProcessCommand() {
-			if (inputs.Count > 0 && outputs.Count == 0) {
-				if (argMode == ArgTypes.Backup) {
-					LogError("No outputs specified for backup.");
-				}
-				else if (argMode == ArgTypes.Restore) {
-					LogError("No outputs specified for restore.");
-				}
-				else {
-					foreach (string input in inputs) {
-						outputs.Add(input);
-					}
-				}
-			}
-			else if (inputs.Count != outputs.Count) {
-				LogError("Number of input filepaths must be the same number as output filenames.");
-			}
-			for (int i = 0; i < inputs.Count && !error; i++) {
+            if (inputs.Count > 0 && outputs.Count == 0)
+            {
+                if (argMode == ArgTypes.Backup)
+                {
+                    LogError("未指定备份的输出文件。"); // "No outputs specified for backup."
+                }
+                else if (argMode == ArgTypes.Restore)
+                {
+                    LogError("未指定恢复的输出文件。"); // "No outputs specified for restore."
+                }
+                else
+                {
+                    foreach (string input in inputs)
+                    {
+                        outputs.Add(input);
+                    }
+                }
+            }
+            else if (inputs.Count != outputs.Count)
+            {
+                LogError("输入文件路径的数量必须与输出文件名的数量相同。"); // "Number of input filepaths must be the same number as output filenames."
+            }
+
+			for (int i = 0; i < inputs.Count && !error; i++)
+			{
 				string input = inputs[i];
 				string output = outputs[i];
 				string inputFull = "";
 				string outputFull = "";
-				try {
+				try
+				{
 					inputFull = Path.GetFullPath(inputs[i]);
 				}
-				catch (ArgumentException) {
-					LogError("Invalid input path: " + input);
+				catch (ArgumentException)
+				{
+					LogError("无效输入路径: " + input);
 					return;
 				}
-				try {
+
+				try
+				{
 					outputFull = Path.GetFullPath(outputs[i]);
 				}
-				catch (ArgumentException) {
-					LogError("Invalid output path: " + input);
+				catch (ArgumentException)
+				{
+					LogError("无效输出路径: " + input);
 					return;
 				}
-				if (string.Compare(inputFull, outputFull, true) == 0) {
-					if (argMode == ArgTypes.Backup) {
-						LogError("Input path is the same as output path for backup:\n    " + input + "\n    " + output);
+
+				if (string.Compare(inputFull, outputFull, true) == 0)
+				{
+					if (argMode == ArgTypes.Backup)
+					{
+						LogError("备份时输入路径与输出路径相同:\n    " + input + "\n    " + output);
 						return;
 					}
-					else if (argMode == ArgTypes.Restore) {
-						LogError("Input path is the same as output path for restore:\n    " + input + "\n    " + output);
+					else if (argMode == ArgTypes.Restore)
+					{
+						LogError("恢复时输入路径与输出路径相同:\n    " + input + "\n    " + output);
 						return;
 					}
 				}
-				if (File.Exists(input) || Directory.Exists(input)) {
+
+				if (File.Exists(input) || Directory.Exists(input))
+				{
 					bool isDir = Directory.Exists(input);
 					bool outputExists = File.Exists(output) || Directory.Exists(output);
-					if (outputExists && isDir != Directory.Exists(output)) {
+					if (outputExists && isDir != Directory.Exists(output))
+					{
 						if (isDir)
-							LogError("Input is folder while output is file:\n    " + input + "\n    " + output);
+							LogError("输入是文件夹而输出是文件:\n    " + input + "\n    " + output);
 						else
-							LogError("Input is file while output is folder:\n    " + input + "\n    " + output);
+							LogError("输入是文件而输出是文件夹:\n    " + input + "\n    " + output);
 						return;
 					}
 					inputs[i] = inputFull;
 					outputs[i] = outputFull;
 				}
-				else {
-					LogError("Input path does not exist: " + input);
+				else
+				{
+					LogError("输入路径不存在: " + input);
 				}
 			}
-			if (!silent)
+                if (!silent)
 				WriteLog();
 			if (!error && inputs.Count > 0) {
 				#if !(CONSOLE)
@@ -340,86 +366,95 @@ namespace TConvert {
 				Processing.ProcessFiles(processMode, inputs.ToArray(), outputs.ToArray());
 			});
 			#if !(CONSOLE)
-			if (!console) {
-				Processing.StartProgressThread(null, "Processing Files...", autoClose, compress, sound, premultiply, thread);
-			}
-			else
+            if (!console)
+            {
+                Processing.StartProgressThread(null, "Processing Files...", autoClose, compress, sound, premultiply, thread);
+            }
+            else
 			#endif
-			{
-				Processing.StartConsoleThread("Processing Files...", silent, compress, sound, premultiply, thread);
-			}
-		}
+            {
+                Processing.StartConsoleThread("Processing Files...", silent, compress, sound, premultiply, thread);
+            }
+        }
 
-		#endregion
-		//--------------------------------
-		#region Input/Output
+        #endregion
+        //--------------------------------
+        #region Input/Output
 
-		/**<summary>Processes the Input option.</summary>*/
-		private static void ProcessInput() {
-			if (passedArgs.HasFlag(ArgTypes.Input))
-				LogOptionAlreadySpecified(ArgTypes.Input);
-			else if (inputs.Count > 0)
-				LogError("File paths already specified. Cannot use " +
-					Options[ArgTypes.Input].Name + " option (" +
-					Options[ArgTypes.Input].OptionsToString() + ").");
-		}
-		/**<summary>Processes the Output option.</summary>*/
-		private static void ProcessOutput() {
-			if (passedArgs.HasFlag(ArgTypes.Output))
-				LogOptionAlreadySpecified(ArgTypes.Output);
-		}
-		/**<summary>Processes the FileName option as well as any leftover options.</summary>*/
-		private static void ProcessFileName(string arg) {
-			if (arg.StartsWith("-") && !File.Exists(arg)) {
-				switch (lastArg) {
-				case ArgTypes.Input:
-					if (inputs.Count == 0)
-						LogError("Expected a filepath: " + arg);
-					else
-						goto default;
-					break;
-				case ArgTypes.Output:
-					if (outputs.Count == 0)
-						LogError("Expected a filepath: " + arg);
-					else
-						goto default;
-					break;
-				case ArgTypes.Log:
-					if (logFile == null)
-						LogError("Expected a filename: " + arg);
-					else
-						goto default;
-					break;
-				default:
-					LogError("Invalid option: " + arg);
-					break;
-				}
-			}
-			else {
-				switch (lastArg) {
-				case ArgTypes.None:
-				case ArgTypes.Input:
-					inputs.Add(arg);
-					break;
-				case ArgTypes.Output:
-					outputs.Add(arg);
-					break;
-				case ArgTypes.Log:
-					logFile = arg;
-					break;
-				default:
-					LogError("Invalid option: " + arg);
-					break;
-				}
-			}
-		}
+        ///<summary>处理输入选项。</summary>*/
+        private static void ProcessInput()
+        {
+            if (passedArgs.HasFlag(ArgTypes.Input))
+                LogOptionAlreadySpecified(ArgTypes.Input);
+            else if (inputs.Count > 0)
+                LogError("文件路径已指定。无法使用 " +
+                    Options[ArgTypes.Input].Name + " 选项 (" +
+                    Options[ArgTypes.Input].OptionsToString() + ")。");
+        }
+        /**<summary>处理输出选项。</summary>*/
+        private static void ProcessOutput()
+        {
+            if (passedArgs.HasFlag(ArgTypes.Output))
+                LogOptionAlreadySpecified(ArgTypes.Output);
+        }
+        /**<summary>处理文件名选项以及任何剩余的选项。</summary>*/
+        private static void ProcessFileName(string arg)
+        {
+            if (arg.StartsWith("-") && !File.Exists(arg))
+            {
+                switch (lastArg)
+                {
+                    case ArgTypes.Input:
+                        if (inputs.Count == 0)
+                            LogError("预期为文件路径: " + arg);
+                        else
+                            goto default;
+                        break;
+                    case ArgTypes.Output:
+                        if (outputs.Count == 0)
+                            LogError("预期为文件路径: " + arg);
+                        else
+                            goto default;
+                        break;
+                    case ArgTypes.Log:
+                        if (logFile == null)
+                            LogError("预期为文件名: " + arg);
+                        else
+                            goto default;
+                        break;
+                    default:
+                        LogError("无效选项: " + arg);
+                        break;
+                }
+            }
+            else
+            {
+                switch (lastArg)
+                {
+                    case ArgTypes.None:
+                    case ArgTypes.Input:
+                        inputs.Add(arg);
+                        break;
+                    case ArgTypes.Output:
+                        outputs.Add(arg);
+                        break;
+                    case ArgTypes.Log:
+                        logFile = arg;
+                        break;
+                    default:
+                        LogError("无效选项: " + arg);
+                        break;
+                }
+            }
+        }
 
-		#endregion
-		//--------------------------------
-		#region Modes
+        #endregion
 
-		/**<summary>Processes the Extract mode option.</summary>*/
-		private static void ProcessExtract() {
+        //--------------------------------
+        #region Modes
+
+        /**<summary>Processes the Extract mode option.</summary>*/
+        private static void ProcessExtract() {
 			if (passedArgs.HasFlag(ArgTypes.Extract))
 				LogOptionAlreadySpecified(ArgTypes.Extract);
 			if (argMode != ArgTypes.None && argMode != ArgTypes.Extract)
@@ -459,30 +494,33 @@ namespace TConvert {
 			processMode = ProcessModes.Script;
 		}
 
-		#endregion
-		//--------------------------------
-		#region Misc
+        #endregion
+        //--------------------------------
+        #region Misc
 
-		/**<summary>Processes the Help option.</summary>*/
-		private static void ProcessHelp() {
-			Log(ConsoleColor.White, "[" + ExeName + "] A combination tool for managing Terraria content resources.");
-			Log("usage: " + ExeName + " [filepaths] [options]");
-			Log("  options:");
-			foreach (var argInfo in Options) {
-				string line = "    ";
-				line += argInfo.Value.OptionsToString();
-				if (argInfo.Value.PostOptions != null)
-					line += " " + argInfo.Value.PostOptions;
-				if (line.Length < 22)
-					line += new string(' ', 22 - line.Length);
-				else if (line.Length < 27)
-					line += new string(' ', 27 - line.Length);
-				line += argInfo.Value.Description;
-				Log(line);
-			}
-		}
-		/**<summary>Processes the Log option.</summary>*/
-		private static void ProcessLog() {
+        /**<summary>Processes the Help option.</summary>*/
+        private static void ProcessHelp()
+        {
+            Log(ConsoleColor.White, "[" + ExeName + "] 一个用于管理Terraria内容资源的组合工具。");
+            Log("用法: " + ExeName + " [文件路径] [选项]");
+            Log("  选项:");
+            foreach (var argInfo in Options)
+            {
+                string line = "    ";
+                line += argInfo.Value.OptionsToString();
+                if (argInfo.Value.PostOptions != null)
+                    line += " " + argInfo.Value.PostOptions;
+                if (line.Length < 22)
+                    line += new string(' ', 22 - line.Length);
+                else if (line.Length < 27)
+                    line += new string(' ', 27 - line.Length);
+                line += argInfo.Value.Description;
+                Log(line);
+            }
+        }
+
+        /**<summary>Processes the Log option.</summary>*/
+        private static void ProcessLog() {
 			if (logFile != null)
 				LogOptionAlreadySpecified(ArgTypes.Log);
 		}

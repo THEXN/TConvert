@@ -58,13 +58,17 @@ namespace TConvert.Convert {
 				outputFile = Path.ChangeExtension(outputFile, ".xnb");
 			}
 
-			// Throw more helpful exceptions than what Bitmap.ctor() throws.
-			if (!Directory.Exists(Path.GetDirectoryName(inputFile)))
-				throw new DirectoryNotFoundException("Could not find a part of the path '" + inputFile + "'.");
-			else if (!File.Exists(inputFile))
-				throw new FileNotFoundException("Could not find file '" + inputFile + "'.");
+            // Throw more helpful exceptions than what Bitmap.ctor() throws.
+            // 检查文件所在目录是否存
+            if (!Directory.Exists(Path.GetDirectoryName(inputFile)))
+                // 如果目录不存在，抛出 DirectoryNotFoundException 异常
+                throw new DirectoryNotFoundException("无法找到路径的一部分 '" + inputFile + "'。");
+            // 如果目录存在，继续检查文件是否存在
+            else if (!File.Exists(inputFile))
+                // 如果文件不存在，抛出 FileNotFoundException 异常
+                throw new FileNotFoundException("无法找到文件 '" + inputFile + "'。");
 
-			using (Bitmap bmp = new Bitmap(inputFile)) {
+            using (Bitmap bmp = new Bitmap(inputFile)) {
 				using (FileStream stream = new FileStream(outputFile, FileMode.OpenOrCreate, FileAccess.Write)) {
 					using (BinaryWriter writer = new BinaryWriter(stream)) {
 						stream.SetLength(0);

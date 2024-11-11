@@ -77,8 +77,8 @@ namespace TConvert {
 		private static void WriteErrorHeader() {
 			if (writer != null) {
 				writer.WriteLine("------------------------------------------------");
-				writer.WriteLine("Time: " + DateTime.Now.ToString());
-				writer.WriteLine();
+                writer.WriteLine("时间: " + DateTime.Now.ToString());
+                writer.WriteLine();
 			}
 		}
 

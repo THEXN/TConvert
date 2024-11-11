@@ -209,20 +209,21 @@ namespace TConvert.Extract {
 						}
 					}
 				}
-				else {
-					throw new Exception("MSADPCM WAVEDATA IS NOT MONO OR STEREO!");
-				}
+                else
+                {
+                    throw new Exception("MSADPCM WAVEDATA 不是单声道或立体声！");
+                }
 
-				// We're done writing PCM data...
-				writer.Close();
+                // 我们已经写完了 PCM 数据...
+                writer.Close();
 
-				// Return the array.
-				return outStream.ToArray();
-			}
-			catch (IOException ex) {
-				throw new Exception("This should not happen as no I/O"
-						+ " resources are used", ex);
-			}
+                // 返回数组。
+                return outStream.ToArray();
+            }
+            catch (IOException ex)
+            {
+                throw new Exception("这不应该发生，因为没有使用 I/O 资源", ex);
+            }
 		}
 	}
 }

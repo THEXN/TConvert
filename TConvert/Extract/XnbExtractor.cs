@@ -87,19 +87,20 @@ namespace TConvert.Extract {
 
 				if (!reader.ReadAndCompareString("XNB")) {
 					reader.Close();
-					throw new XnbException("Not an XNB file: " + Path.GetFileName(inputFile) + ".");
-				}
+                    throw new XnbException("不是XNB文件: " + Path.GetFileName(inputFile) + "。");
+                }
 
-				// Ignore target platform, it shouldn't matter
-				int targetPlatform = reader.ReadByte();
+                // 忽略目标平台，不影响操作
+                int targetPlatform = reader.ReadByte();
 
-				int version = reader.ReadByte();
-				if (version != 5) {
-					reader.Close();
-					throw new XnbException("Unsupported XNB version: " + version + ".");
-				}
+                int version = reader.ReadByte();
+                if (version != 5)
+                {
+                    reader.Close();
+                    throw new XnbException("不支持的XNB版本: " + version + "。");
+                }
 
-				bool compressed = (reader.ReadByte() & 0x80) != 0;
+                bool compressed = (reader.ReadByte() & 0x80) != 0;
 
 				int compressedSize = reader.ReadInt32();
 				int decompressedSize = (compressed ? reader.ReadInt32() : compressedSize);
@@ -133,21 +134,24 @@ namespace TConvert.Extract {
 					reader.ReadInt32();
 				}
 
-				// Shared resources are unused by Terraria assets
-				if (reader.Read7BitEncodedInt() != 0) {
-					reader.Close();
-					throw new XnbException("Shared resources are not supported.");
-				}
+                // Terraria资源不使用共享资源
+                if (reader.Read7BitEncodedInt() != 0)
+                {
+                    reader.Close();
+                    throw new XnbException("不支持共享资源。");
+                }
 
-				if (reader.Read7BitEncodedInt() != 1) {
-					reader.Close();
-					throw new XnbException("Primary asset is null; this shouldn't happen.");
-				}
+                if (reader.Read7BitEncodedInt() != 1)
+                {
+                    reader.Close();
+                    throw new XnbException("主资源为空；不应出现这种情况。");
+                }
 
-				//string baseFileName = Path.GetFileNameWithoutExtension(inputFile);
 
-				// Switch on the type reader name, excluding assembly information
-				switch (typeReaderName) {
+                //string baseFileName = Path.GetFileNameWithoutExtension(inputFile);
+
+                // Switch on the type reader name, excluding assembly information
+                switch (typeReaderName) {
 				case "Microsoft.Xna.Framework.Content.Texture2DReader": {
 						if (!extractImages) {
 							reader.Close();
@@ -161,28 +165,34 @@ namespace TConvert.Extract {
 						bmp.Save(outputFile, ImageFormat.Png);
 						return true;
 					}
-				case "Microsoft.Xna.Framework.Content.SoundEffectReader": {
-						if (!extractSounds) {
-							reader.Close();
-							return false;
-						}
-						if (changeExtension) {
-							outputFile = Path.ChangeExtension(outputFile, ".wav");
-						}
+                    case "Microsoft.Xna.Framework.Content.SoundEffectReader":
+                        {
+                            if (!extractSounds)
+                            {
+                                reader.Close();
+                                return false;
+                            }
+                            if (changeExtension)
+                            {
+                                outputFile = Path.ChangeExtension(outputFile, ".wav");
+                            }
 
-						int audioFormat = reader.ReadInt32();
-						if (audioFormat != 18) {
-							reader.Close();
-							throw new XnbException("Unimplemented audio format: " + audioFormat + ".");
-						}
+                            int audioFormat = reader.ReadInt32();
+                            if (audioFormat != 18)
+                            {
+                                reader.Close();
+                                throw new XnbException("未实现的音频格式: " + audioFormat + "。");
+                            }
 
-						int wavCodec = reader.ReadInt16();
-						if (wavCodec != 1) {
-							reader.Close();
-							throw new XnbException("Unimplemented wav codec: " + wavCodec + ".");
-						}
+                            int wavCodec = reader.ReadInt16();
+                            if (wavCodec != 1)
+                            {
+                                reader.Close();
+                                throw new XnbException("未实现的WAV编解码器: " + wavCodec + "。");
+                            }
 
-						int channels = reader.ReadInt16() & 0xffff;
+
+                            int channels = reader.ReadInt16() & 0xffff;
 						int samplesPerSecond = reader.ReadInt32();
 						int averageBytesPerSecond = reader.ReadInt32();
 						int blockAlign = reader.ReadInt16() & 0xffff;
@@ -270,9 +280,9 @@ namespace TConvert.Extract {
 
 				default:
 					reader.Close();
-					throw new XnbException("Unsupported asset type: " + typeReaderName + ".");
-				}
-			}
+                        throw new XnbException("不支持的资源类型: " + typeReaderName + "。");
+                }
+            }
 		}
 
 		/**<summary>Reads an Xnb Texture2D.</summary>*/
@@ -287,10 +297,10 @@ namespace TConvert.Extract {
 			int size = reader.ReadInt32();
 
 			if (mipCount < 1) {
-				throw new XnbException("Unexpected mipCount: " + mipCount + ".");
-			}
+                throw new XnbException("意外的 mipCount: " + mipCount + "。");
+            }
 
-			byte[] source = reader.ReadBytes(size);
+            byte[] source = reader.ReadBytes(size);
 
 			if (surfaceFormat != SurfaceFormatColor) {
 				//https://github.com/mcgrue/FNA/blob/master/src/Content/ContentReaders/Texture2DReader.cs
@@ -305,9 +315,9 @@ namespace TConvert.Extract {
 					source = DxtUtil.DecompressDxt5(source, width, height);
 				}
 				else {
-					throw new XnbException("Unexpected surface format: " + surfaceFormat + ".");
-				}
-			}
+                    throw new XnbException("意外的表面格式: " + surfaceFormat + "。");
+                }
+            }
 
 			// Swap R and B channels
 			for (int j = 0; j < width * height; j++) {

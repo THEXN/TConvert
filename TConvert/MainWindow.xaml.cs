@@ -774,14 +774,18 @@ namespace TConvert {
 		private void OnViewOnGitHub(object sender, RoutedEventArgs e) {
 			Process.Start("https://github.com/trigger-death/TConvert");
 		}
+        private void OnViewOnCNGitHub(object sender, RoutedEventArgs e)
+        {
+            Process.Start("https://github.com/THEXN/TConvert");
+        }
 
-		#endregion
-		//--------------------------------
-		#endregion
-		//=========== HELPERS ============
-		#region Helpers
+        #endregion
+        //--------------------------------
+        #endregion
+        //=========== HELPERS ============
+        #region Helpers
 
-		private string GetPath(string currentPath, bool input, bool extract) {
+        private string GetPath(string currentPath, bool input, bool extract) {
 			switch (extract ? Config.Extract.Mode : Config.Convert.Mode) {
 			case InputModes.Folder: {
 					System.Windows.Forms.FolderBrowserDialog dialog = new System.Windows.Forms.FolderBrowserDialog();

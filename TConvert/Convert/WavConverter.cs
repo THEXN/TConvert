@@ -43,8 +43,8 @@ namespace TConvert.Convert {
 				isTemp = true;
 				string tempOut = Path.Combine(TempConverting, Random.Next().ToString() + ".wav");
 				if (!FFmpeg.Convert(inputFile, tempOut))
-					throw new WavException("Failed to convert to wav format.");
-				inputFile = tempOut;
+                    throw new WavException("转换为 WAV 格式失败。");
+                inputFile = tempOut;
 			}
 
 			ushort wFormatTag;
@@ -56,34 +56,36 @@ namespace TConvert.Convert {
 
 			int dataChunkSize;
 			byte[] waveData;
-			
-			using (FileStream inputStream = new FileStream(inputFile, FileMode.Open)) {
-				using (BinaryReader reader = new BinaryReader(inputStream)) {
-					string format = new string(reader.ReadChars(4));
-					if (format != "RIFF")
-						throw new WavException("Invalid file format: " + format + ".");
 
-					uint fileLength = reader.ReadUInt32();
-					if (fileLength != inputStream.Length-8)
-						throw new WavException("File length mismatch: " + fileLength + " - should be " + inputStream.Length + ".");
-					
-					format = new string(reader.ReadChars(4));
-					if (format != "WAVE")
-						throw new WavException("No WAVE tag. (" + format + ")");
+            using (FileStream inputStream = new FileStream(inputFile, FileMode.Open))
+            {
+                using (BinaryReader reader = new BinaryReader(inputStream))
+                {
+                    string format = new string(reader.ReadChars(4));
+                    if (format != "RIFF")
+                        throw new WavException("无效的文件格式: " + format + "。");
 
-					format = new string(reader.ReadChars(4));
-					if (format != "fmt ")
-						throw new WavException("No fmt tag. (" + format + ")");
+                    uint fileLength = reader.ReadUInt32();
+                    if (fileLength != inputStream.Length - 8)
+                        throw new WavException("文件长度不匹配: " + fileLength + " - 应该是 " + inputStream.Length + "。");
 
-					int chunkSize = reader.ReadInt32();
-					if (chunkSize < 16)
-						throw new WavException("Incorrect format length.");
-					chunkSize += (int)inputStream.Position;
-					
-					if ((wFormatTag = reader.ReadUInt16()) != 1)
-						throw new Exception("Unimplemented wav codec (must be PCM).");
+                    format = new string(reader.ReadChars(4));
+                    if (format != "WAVE")
+                        throw new WavException("没有 WAVE 标签。(" + format + ")");
 
-					nChannels = reader.ReadUInt16();
+                    format = new string(reader.ReadChars(4));
+                    if (format != "fmt ")
+                        throw new WavException("没有 fmt 标签。(" + format + ")");
+
+                    int chunkSize = reader.ReadInt32();
+                    if (chunkSize < 16)
+                        throw new WavException("格式长度不正确。");
+                    chunkSize += (int)inputStream.Position;
+
+                    if ((wFormatTag = reader.ReadUInt16()) != 1)
+                        throw new Exception("未实现的 WAV 编解码器（必须是 PCM）。");
+
+                nChannels = reader.ReadUInt16();
 					
 					nSamplesPerSec = reader.ReadUInt32();
 					
@@ -93,12 +95,12 @@ namespace TConvert.Convert {
 					
 					wBitsPerSample = reader.ReadUInt16();
 
-					if (nAvgBytesPerSec != (nSamplesPerSec * nChannels * (wBitsPerSample / 8)))
-						throw new WavException("Average bytes per second number incorrect.");
-					if (nBlockAlign != (nChannels * (wBitsPerSample / 8)))
-						throw new WavException("Block align number incorrect.");
-					
-					inputStream.Position = chunkSize;
+                    if (nAvgBytesPerSec != (nSamplesPerSec * nChannels * (wBitsPerSample / 8)))
+                        throw new WavException("平均每秒字节数不正确。");
+                    if (nBlockAlign != (nChannels * (wBitsPerSample / 8)))
+                        throw new WavException("块对齐数不正确。");
+
+                    inputStream.Position = chunkSize;
 
 					format = new string(reader.ReadChars(4));
 					dataChunkSize = reader.ReadInt32();
@@ -109,9 +111,10 @@ namespace TConvert.Convert {
 						if (dataChunkSize < 0 || dataChunkSize + (int)inputStream.Position > (int)inputStream.Length)
 							break;
 					}
-					if (format != "data") throw new WavException("No data tag.");
-					
-					waveData = reader.ReadBytes(dataChunkSize);
+                    if (format != "data")
+                        throw new WavException("没有 data 标签。");
+
+                    waveData = reader.ReadBytes(dataChunkSize);
 				}
 			}
 
