@@ -103,17 +103,18 @@ namespace TConvert {
 			checkBoxExtractFonts.IsEnabled = Config.Extract.Mode == InputModes.Folder;
 			checkBoxExtractWaveBank.IsEnabled = Config.Extract.Mode == InputModes.Folder;
 			switch (Config.Extract.Mode) {
-			case InputModes.Folder:
-				labelExtractInput.Content = "Input Folder";
-				labelExtractOutput.Content = "Output Folder";
-				break;
-			case InputModes.File:
-				labelExtractInput.Content = "Input File";
-				labelExtractOutput.Content = "Output File";
-				break;
-			}
+                case InputModes.Folder:
+                    labelExtractInput.Content = "输入文件夹";
+                    labelExtractOutput.Content = "输出文件夹";
+                    break;
+                case InputModes.File:
+                    labelExtractInput.Content = "输入文件";
+                    labelExtractOutput.Content = "输出文件";
+                    break;
 
-			comboBoxConvertMode.SelectedIndex = (int)Config.Convert.Mode;
+            }
+
+            comboBoxConvertMode.SelectedIndex = (int)Config.Convert.Mode;
 			textBoxConvertInput.Text = Config.Convert.CurrentInput;
 			textBoxConvertOutput.Text = Config.Convert.CurrentOutput;
 			checkBoxConvertImages.IsChecked = Config.Convert.AllowImages;
@@ -126,12 +127,12 @@ namespace TConvert {
 			checkBoxConvertSounds.IsEnabled = Config.Convert.Mode == InputModes.Folder;
 			switch (Config.Convert.Mode) {
 			case InputModes.Folder:
-				labelConvertInput.Content = "Input Folder";
-				labelConvertOutput.Content = "Output Folder";
+				labelConvertInput.Content = "输入文件夹";
+				labelConvertOutput.Content = "输出文件夹";
 				break;
 			case InputModes.File:
-				labelConvertInput.Content = "Input File";
-				labelConvertOutput.Content = "Output File";
+				labelConvertInput.Content = "输入文件";
+				labelConvertOutput.Content = "输出文件";
 				break;
 			}
 
@@ -192,8 +193,8 @@ namespace TConvert {
 		private void OnBrowseTerraria(object sender, RoutedEventArgs e) {
 			System.Windows.Forms.FolderBrowserDialog dialog = new System.Windows.Forms.FolderBrowserDialog();
 			dialog.ShowNewFolderButton = false;
-			dialog.Description = "Choose Terraria Content folder";
-			dialog.SelectedPath = Helpers.FixPathSafe(Config.TerrariaContentDirectory);
+            dialog.Description = "选择 Terraria 内容文件夹";
+            dialog.SelectedPath = Helpers.FixPathSafe(Config.TerrariaContentDirectory);
 			if (dialog.SelectedPath == string.Empty)
 				dialog.SelectedPath = lastFolderPath;
 			var result = FolderBrowserLauncher.ShowFolderBrowser(dialog);
@@ -222,51 +223,58 @@ namespace TConvert {
 			bool allowWaveBank = Config.Extract.AllowWaveBank;
 
 			Thread thread;
-			if (Config.Extract.Mode == InputModes.Folder) {
-				if (!Helpers.DirectoryExistsSafe(input)) {
-					TriggerMessageBox.Show(this, MessageIcon.Warning, "Could not find the input folder.", "Invalid Path");
-					return;
-				}
-				if (!Helpers.IsPathValid(output)) {
-					TriggerMessageBox.Show(this, MessageIcon.Warning, "Output folder path is invalid.", "Invalid Path");
-					return;
-				}
-				input = Helpers.FixPathSafe(input);
-				output = Helpers.FixPathSafe(output);
-				thread = new Thread(() => {
-					Processing.ExtractAll(input, output, allowImages, allowSounds, allowFonts, allowWaveBank);
-				});
-			}
-			else {
-				if (!Helpers.FileExistsSafe(input)) {
-					TriggerMessageBox.Show(this, MessageIcon.Warning, "Could not find the input file.", "Invalid Path");
-					return;
-				}
-				if (!Helpers.IsPathValid(output)) {
-					TriggerMessageBox.Show(this, MessageIcon.Warning, "Output file path is invalid.", "Invalid Path");
-					return;
-				}
-				input = Helpers.FixPathSafe(input);
-				output = Helpers.FixPathSafe(output);
-				thread = new Thread(() => {
-					Processing.ExtractSingleFile(input, output);
-				});
-			}
-			Processing.StartProgressThread(this, "Extracting...", Config.AutoCloseProgress, Config.CompressImages, Config.CompletionSound, Config.PremultiplyAlpha, thread);
-		}
-		private void OnExtractModeChanged(object sender, SelectionChangedEventArgs e) {
+            if (Config.Extract.Mode == InputModes.Folder)
+            {
+                if (!Helpers.DirectoryExistsSafe(input))
+                {
+                    TriggerMessageBox.Show(this, MessageIcon.Warning, "无法找到输入文件夹。", "路径无效");
+                    return;
+                }
+                if (!Helpers.IsPathValid(output))
+                {
+                    TriggerMessageBox.Show(this, MessageIcon.Warning, "输出文件夹路径无效。", "路径无效");
+                    return;
+                }
+                input = Helpers.FixPathSafe(input);
+                output = Helpers.FixPathSafe(output);
+                thread = new Thread(() => {
+                    Processing.ExtractAll(input, output, allowImages, allowSounds, allowFonts, allowWaveBank);
+                });
+            }
+            else
+            {
+                if (!Helpers.FileExistsSafe(input))
+                {
+                    TriggerMessageBox.Show(this, MessageIcon.Warning, "无法找到输入文件。", "路径无效");
+                    return;
+                }
+                if (!Helpers.IsPathValid(output))
+                {
+                    TriggerMessageBox.Show(this, MessageIcon.Warning, "输出文件路径无效。", "路径无效");
+                    return;
+                }
+                input = Helpers.FixPathSafe(input);
+                output = Helpers.FixPathSafe(output);
+                thread = new Thread(() => {
+                    Processing.ExtractSingleFile(input, output);
+                });
+            }
+            Processing.StartProgressThread(this, "提取中...", Config.AutoCloseProgress, Config.CompressImages, Config.CompletionSound, Config.PremultiplyAlpha, thread);
+
+        }
+        private void OnExtractModeChanged(object sender, SelectionChangedEventArgs e) {
 			if (!loaded)
 				return;
 			Config.Extract.Mode = (InputModes)comboBoxExtractMode.SelectedIndex;
 			
 			switch (Config.Extract.Mode) {
 			case InputModes.Folder:
-				labelExtractInput.Content = "Input Folder";
-				labelExtractOutput.Content = "Output Folder";
+				labelExtractInput.Content = "输入文件夹";
+				labelExtractOutput.Content = "输出文件夹";
 				break;
 			case InputModes.File:
-				labelExtractInput.Content = "Input File";
-				labelExtractOutput.Content = "Output File";
+				labelExtractInput.Content = "输入文件";
+				labelExtractOutput.Content = "输出文件";
 				break;
 			}
 			textBoxExtractInput.Text = Config.Extract.CurrentInput;
@@ -345,39 +353,46 @@ namespace TConvert {
 			bool allowSounds = Config.Convert.AllowSounds;
 
 			Thread thread;
-			if (Config.Convert.Mode == InputModes.Folder) {
-				if (!Helpers.DirectoryExistsSafe(input)) {
-					TriggerMessageBox.Show(this, MessageIcon.Warning, "Could not find the input folder.", "Invalid Path");
-					return;
-				}
-				if (!Helpers.IsPathValid(output)) {
-					TriggerMessageBox.Show(this, MessageIcon.Warning, "Output folder path is invalid.", "Invalid Path");
-					return;
-				}
-				input = Helpers.FixPathSafe(input);
-				output = Helpers.FixPathSafe(output);
-				thread = new Thread(() => {
-					Processing.ConvertAll(input, output, allowImages, allowSounds);
-				});
-			}
-			else {
-				if (!Helpers.FileExistsSafe(input)) {
-					TriggerMessageBox.Show(this, MessageIcon.Warning, "Could not find the input file", "Invalid Path");
-					return;
-				}
-				if (!Helpers.IsPathValid(output)) {
-					TriggerMessageBox.Show(this, MessageIcon.Warning, "Output file path is invalid.", "Invalid Path");
-					return;
-				}
-				input = Helpers.FixPathSafe(input);
-				output = Helpers.FixPathSafe(output);
-				thread = new Thread(() => {
-					Processing.ConvertSingleFile(input, output);
-				});
-			}
-			Processing.StartProgressThread(this, "Converting...", Config.AutoCloseProgress, Config.CompressImages, Config.CompletionSound, Config.PremultiplyAlpha, thread);
-		}
-		private void OnConvertModeChanged(object sender, SelectionChangedEventArgs e) {
+            if (Config.Convert.Mode == InputModes.Folder)
+            {
+                if (!Helpers.DirectoryExistsSafe(input))
+                {
+                    TriggerMessageBox.Show(this, MessageIcon.Warning, "无法找到输入文件夹。", "路径无效");
+                    return;
+                }
+                if (!Helpers.IsPathValid(output))
+                {
+                    TriggerMessageBox.Show(this, MessageIcon.Warning, "输出文件夹路径无效。", "路径无效");
+                    return;
+                }
+                input = Helpers.FixPathSafe(input);
+                output = Helpers.FixPathSafe(output);
+                thread = new Thread(() => {
+                    Processing.ConvertAll(input, output, allowImages, allowSounds);
+                });
+            }
+            else
+            {
+                if (!Helpers.FileExistsSafe(input))
+                {
+                    TriggerMessageBox.Show(this, MessageIcon.Warning, "无法找到输入文件。", "路径无效");
+                    return;
+                }
+                if (!Helpers.IsPathValid(output))
+                {
+                    TriggerMessageBox.Show(this, MessageIcon.Warning, "输出文件路径无效。", "路径无效");
+                    return;
+                }
+                input = Helpers.FixPathSafe(input);
+                output = Helpers.FixPathSafe(output);
+                thread = new Thread(() => {
+                    Processing.ConvertSingleFile(input, output);
+                });
+            }
+            Processing.StartProgressThread(this, "转换中...", Config.AutoCloseProgress, Config.CompressImages, Config.CompletionSound, Config.PremultiplyAlpha, thread);
+
+        }
+        private void OnConvertModeChanged(object sender, SelectionChangedEventArgs e) {
 			if (!loaded)
 				return;
 
@@ -385,12 +400,12 @@ namespace TConvert {
 
 			switch (Config.Convert.Mode) {
 			case InputModes.Folder:
-				labelConvertInput.Content = "Input Folder";
-				labelConvertOutput.Content = "Output Folder";
+				labelConvertInput.Content = "输入文件夹";
+				labelConvertOutput.Content = "输出文件夹";
 				break;
 			case InputModes.File:
-				labelConvertInput.Content = "Input File";
-				labelConvertOutput.Content = "Output File";
+				labelConvertInput.Content = "输入文件";
+				labelConvertOutput.Content = "输出文件";
 				break;
 			}
 			textBoxConvertInput.Text = Config.Convert.CurrentInput;
@@ -454,54 +469,62 @@ namespace TConvert {
 			string input = Config.Backup.FolderContent;
 			string output = Config.Backup.FolderBackup;
 
-			if (!Helpers.DirectoryExistsSafe(input)) {
-				TriggerMessageBox.Show(this, MessageIcon.Warning, "Could not find the Content folder.", "Invalid Path");
-				return;
-			}
-			if (!Helpers.IsPathValid(output)) {
-				TriggerMessageBox.Show(this, MessageIcon.Warning, "The Backup folder path is invalid.", "Invalid Path");
-				return;
-			}
-			if (string.Compare(Path.GetFullPath(input), Path.GetFullPath(output), true) == 0) {
-				TriggerMessageBox.Show(this, MessageIcon.Warning, "Backup paths cannot be the same folder.", "Invalid Path");
-				return;
-			}
+            if (!Helpers.DirectoryExistsSafe(input))
+            {
+                TriggerMessageBox.Show(this, MessageIcon.Warning, "无法找到内容文件夹。", "路径无效");
+                return;
+            }
+            if (!Helpers.IsPathValid(output))
+            {
+                TriggerMessageBox.Show(this, MessageIcon.Warning, "备份文件夹路径无效。", "路径无效");
+                return;
+            }
+            if (string.Compare(Path.GetFullPath(input), Path.GetFullPath(output), true) == 0)
+            {
+                TriggerMessageBox.Show(this, MessageIcon.Warning, "备份路径不能是同一个文件夹。", "路径无效");
+                return;
+            }
 
-			input = Helpers.FixPathSafe(input);
+
+            input = Helpers.FixPathSafe(input);
 			output = Helpers.FixPathSafe(output);
 			Thread thread = new Thread(() => {
 				Processing.BackupFiles(input, output);
 			});
-			Processing.StartProgressThread(this, "Backing Up...", Config.AutoCloseProgress, Config.CompressImages, Config.CompletionSound, Config.PremultiplyAlpha, thread);
+			Processing.StartProgressThread(this, "正在备份...", Config.AutoCloseProgress, Config.CompressImages, Config.CompletionSound, Config.PremultiplyAlpha, thread);
 		}
 		private void OnRestore(object sender, RoutedEventArgs e) {
 			string input = Config.Backup.FolderBackup;
 			string output = Config.Backup.FolderContent;
 
-			if (!Helpers.DirectoryExistsSafe(input)) {
-				TriggerMessageBox.Show(this, MessageIcon.Warning, "Could not find the Backup folder.", "Invalid Path");
-				return;
-			}
-			if (!Helpers.DirectoryExistsSafe(output)) {
-				TriggerMessageBox.Show(this, MessageIcon.Warning, "Could not find the Content folder.", "Invalid Path");
-				return;
-			}
-			if (string.Compare(Path.GetFullPath(input), Path.GetFullPath(output), true) == 0) {
-				TriggerMessageBox.Show(this, MessageIcon.Warning, "Restore paths cannot be the same folder.", "Invalid Path");
-				return;
-			}
+            if (!Helpers.DirectoryExistsSafe(input))
+            {
+                TriggerMessageBox.Show(this, MessageIcon.Warning, "无法找到备份文件夹。", "路径无效");
+                return;
+            }
+            if (!Helpers.DirectoryExistsSafe(output))
+            {
+                TriggerMessageBox.Show(this, MessageIcon.Warning, "无法找到内容文件夹。", "路径无效");
+                return;
+            }
+            if (string.Compare(Path.GetFullPath(input), Path.GetFullPath(output), true) == 0)
+            {
+                TriggerMessageBox.Show(this, MessageIcon.Warning, "恢复路径不能是相同的文件夹。", "路径无效");
+                return;
+            }
 
-			input = Helpers.FixPathSafe(input);
+
+            input = Helpers.FixPathSafe(input);
 			output = Helpers.FixPathSafe(output);
 			Thread thread = new Thread(() => {
 				Processing.RestoreFiles(input, output);
 			});
-			Processing.StartProgressThread(this, "Restoring...", Config.AutoCloseProgress, Config.CompressImages, Config.CompletionSound, Config.PremultiplyAlpha, thread);
+			Processing.StartProgressThread(this, "恢复中...", Config.AutoCloseProgress, Config.CompressImages, Config.CompletionSound, Config.PremultiplyAlpha, thread);
 		}
 		private void OnBackupChangeContent(object sender, RoutedEventArgs e) {
 			System.Windows.Forms.FolderBrowserDialog dialog = new System.Windows.Forms.FolderBrowserDialog();
 			dialog.ShowNewFolderButton = true;
-			dialog.Description = "Choose Content folder";
+			dialog.Description = "选择内容文件夹";
 			dialog.SelectedPath = Config.Backup.FolderContent;
 			if (dialog.SelectedPath == string.Empty)
 				dialog.SelectedPath = lastFolderPath;
@@ -515,7 +538,7 @@ namespace TConvert {
 		private void OnBackupChangeBackup(object sender, RoutedEventArgs e) {
 			System.Windows.Forms.FolderBrowserDialog dialog = new System.Windows.Forms.FolderBrowserDialog();
 			dialog.ShowNewFolderButton = true;
-			dialog.Description = "Choose Backup folder";
+			dialog.Description = "选择备份文件夹";
 			dialog.SelectedPath = Config.Backup.FolderBackup;
 			if (dialog.SelectedPath == string.Empty)
 				dialog.SelectedPath = lastFolderPath;
@@ -541,63 +564,76 @@ namespace TConvert {
 			Config.Backup.FolderBackup = textBoxBackup.Text;
 		}
 
-		#endregion
-		//--------------------------------
-		#region Scripting
+        #endregion
+        //--------------------------------
+        #region 脚本操作
 
-		private void OnRunScript(object sender, RoutedEventArgs e) {
-			string input = Config.Script.File;
+        private void OnRunScript(object sender, RoutedEventArgs e)
+        {
+            string input = Config.Script.File;
 
-			Thread thread;
-			if (!Helpers.FileExistsSafe(input)) {
-				TriggerMessageBox.Show(this, MessageIcon.Warning, "Could not find the script file.", "Invalid Path");
-				return;
-			}
-			input = Helpers.FixPathSafe(input);
-			thread = new Thread(() => {
-				Processing.RunScript(input);
-			});
-			Processing.StartProgressThread(this, "Running Script...", Config.AutoCloseProgress, Config.CompressImages, Config.CompletionSound, Config.PremultiplyAlpha, thread);
-		}
-		private void OnChangeScript(object sender, RoutedEventArgs e) {
-			OpenFileDialog dialog = new OpenFileDialog();
-			dialog.Filter = "Xml files (*.xml)|*.xml|All files (*.*)|*.*";
-			dialog.FilterIndex = 0;
-			dialog.Title = "Choose script file";
-			dialog.CheckFileExists = true;
-			if (Config.Script.File != string.Empty) {
-				try {
-					dialog.FileName = Path.GetFileName(Config.Script.File);
-					dialog.InitialDirectory = Path.GetDirectoryName(Config.Script.File);
-				}
-				catch {
-					dialog.InitialDirectory = lastFilePath;
-				}
-			}
-			else {
-				dialog.InitialDirectory = lastFilePath;
-			}
-			var result = dialog.ShowDialog(this);
-			if (result.HasValue && result.Value) {
-				textBoxScript.Text = dialog.FileName;
-				Config.Script.File = dialog.FileName;
-			}
-			try {
-				lastFilePath = Path.GetDirectoryName(dialog.FileName);
-			}
-			catch { }
-		}
-		private void OnScriptChanged(object sender, TextChangedEventArgs e) {
-			if (!loaded)
-				return;
-			Config.Script.File = textBoxScript.Text;
-		}
+            Thread thread;
+            if (!Helpers.FileExistsSafe(input))
+            {
+                TriggerMessageBox.Show(this, MessageIcon.Warning, "找不到脚本文件。", "无效路径");
+                return;
+            }
+            input = Helpers.FixPathSafe(input);
+            thread = new Thread(() => {
+                Processing.RunScript(input);
+            });
+            Processing.StartProgressThread(this, "正在运行脚本...", Config.AutoCloseProgress, Config.CompressImages, Config.CompletionSound, Config.PremultiplyAlpha, thread);
+        }
 
-		#endregion
-		//--------------------------------
-		#region File Drop
+        private void OnChangeScript(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Filter = "Xml 文件 (*.xml)|*.xml|所有文件 (*.*)|*.*";
+            dialog.FilterIndex = 0;
+            dialog.Title = "选择脚本文件";
+            dialog.CheckFileExists = true;
+            if (Config.Script.File != string.Empty)
+            {
+                try
+                {
+                    dialog.FileName = Path.GetFileName(Config.Script.File);
+                    dialog.InitialDirectory = Path.GetDirectoryName(Config.Script.File);
+                }
+                catch
+                {
+                    dialog.InitialDirectory = lastFilePath;
+                }
+            }
+            else
+            {
+                dialog.InitialDirectory = lastFilePath;
+            }
+            var result = dialog.ShowDialog(this);
+            if (result.HasValue && result.Value)
+            {
+                textBoxScript.Text = dialog.FileName;
+                Config.Script.File = dialog.FileName;
+            }
+            try
+            {
+                lastFilePath = Path.GetDirectoryName(dialog.FileName);
+            }
+            catch { }
+        }
 
-		private void OnFileDrop(object sender, DragEventArgs e) {
+        private void OnScriptChanged(object sender, TextChangedEventArgs e)
+        {
+            if (!loaded)
+                return;
+            Config.Script.File = textBoxScript.Text;
+        }
+
+        #endregion
+
+        //--------------------------------
+        #region File Drop
+
+        private void OnFileDrop(object sender, DragEventArgs e) {
 			labelDrop.Visibility = Visibility.Hidden;
 			if (this.OwnedWindows.Count == 0 && e.Data.GetDataPresent(DataFormats.FileDrop)) {
 				List<string> files = new List<string>();
@@ -636,23 +672,26 @@ namespace TConvert {
 					}
 				}
 
-				if (extractFiles.Count == 0 && convertFiles.Count == 0 && scriptFiles.Count == 0) {
-					// Prevent Explorer from freazing until the message box is closed
-					Thread showThread = new Thread(() => {
-						Application.Current.Dispatcher.Invoke(() => {
-							TriggerMessageBox.Show(this, MessageIcon.Warning, "No files to convert or extract, or scripts to run!", "File Drop");
-						});
-					});
-					showThread.Start();
-				}
-				else {
-					Thread thread = new Thread(() => {
-						Processing.ProcessDropFiles(extractFiles.ToArray(), convertFiles.ToArray(), scriptFiles.ToArray());
-					});
-					Processing.StartProgressThread(this, "Processing Drop Files...", Config.AutoCloseDropProgress, Config.CompressImages, Config.CompletionSound, Config.PremultiplyAlpha, thread);
-				}
-			}
-		}
+                if (extractFiles.Count == 0 && convertFiles.Count == 0 && scriptFiles.Count == 0)
+                {
+                    // 防止资源管理器在消息框关闭之前冻结
+                    Thread showThread = new Thread(() => {
+                        Application.Current.Dispatcher.Invoke(() => {
+                            TriggerMessageBox.Show(this, MessageIcon.Warning, "没有文件需要转换或提取，或者没有脚本可运行！", "文件拖放");
+                        });
+                    });
+                    showThread.Start();
+                }
+                else
+                {
+                    Thread thread = new Thread(() => {
+                        Processing.ProcessDropFiles(extractFiles.ToArray(), convertFiles.ToArray(), scriptFiles.ToArray());
+                    });
+                    Processing.StartProgressThread(this, "正在处理拖放的文件...", Config.AutoCloseDropProgress, Config.CompressImages, Config.CompletionSound, Config.PremultiplyAlpha, thread);
+                }
+
+            }
+        }
 		private void OnFileDropEnter(object sender, DragEventArgs e) {
 			if (this.OwnedWindows.Count == 0 && e.Data.GetDataPresent(DataFormats.FileDrop)) {
 				labelDrop.Visibility = Visibility.Visible;
@@ -708,14 +747,16 @@ namespace TConvert {
 						return;
 					}
 				}
-				catch { }
-				TriggerMessageBox.Show(this, MessageIcon.Warning, "Failed to locate Terraria executable.", "Missing Exe");
-			}
-			else {
-				TriggerMessageBox.Show(this, MessageIcon.Warning, "No path to Terraria specified.", "No Path");
-			}
-		}
-		private void OnOpenTerrariaFolder(object sender, RoutedEventArgs e) {
+                catch { }
+                TriggerMessageBox.Show(this, MessageIcon.Warning, "无法找到 Terraria 可执行文件。", "缺少 Exe");
+            }
+            else
+            {
+                TriggerMessageBox.Show(this, MessageIcon.Warning, "未指定 Terraria 路径。", "没有路径");
+            }
+
+        }
+        private void OnOpenTerrariaFolder(object sender, RoutedEventArgs e) {
 			if (Config.TerrariaContentDirectory != string.Empty) {
 				string dir = Config.TerrariaContentDirectory;
 				try {
@@ -723,9 +764,9 @@ namespace TConvert {
 					Process.Start(dir);
 				}
 				catch {
-					TriggerMessageBox.Show(this, MessageIcon.Warning, "Failed to locate Terraria folder.", "Missing Folder");
-				}
-			}
+                    TriggerMessageBox.Show(this, MessageIcon.Warning, "无法找到 Terraria 文件夹。", "缺少文件夹");
+                }
+            }
 		}
 		private void OnExit(object sender, RoutedEventArgs e) {
 			Close();
@@ -783,71 +824,84 @@ namespace TConvert {
         //--------------------------------
         #endregion
         //=========== HELPERS ============
-        #region Helpers
+        #region 帮助函数
 
-        private string GetPath(string currentPath, bool input, bool extract) {
-			switch (extract ? Config.Extract.Mode : Config.Convert.Mode) {
-			case InputModes.Folder: {
-					System.Windows.Forms.FolderBrowserDialog dialog = new System.Windows.Forms.FolderBrowserDialog();
-					dialog.ShowNewFolderButton = true;
-					dialog.Description = "Choose " + (input ? "input" : "output") + " folder";
-					dialog.SelectedPath = currentPath;
-					if (dialog.SelectedPath == string.Empty)
-						dialog.SelectedPath = lastFolderPath;
-					var result = FolderBrowserLauncher.ShowFolderBrowser(dialog);
-					lastFolderPath = dialog.SelectedPath;
-					if (result == System.Windows.Forms.DialogResult.OK) {
-						return dialog.SelectedPath;
-					}
-					break;
-				}
-			case InputModes.File: {
-					FileDialog dialog;
-					if (input)
-						dialog = new OpenFileDialog();
-					else
-						dialog = new SaveFileDialog();
-					string audioFiles = "*.wav;*.mp3;*.mp2;*.mpga;*.m4a;*.aac;*.flac;*.ogg;*.wma;*.aif;*.aiff;*.aifc";
-					dialog.Filter = (extract == input ?
-						"Xna files|*.xnb;*.xwb|" +
-						"Xnb files|*.xnb|" +
-						"Xwb files|*.xwb|" :
-						"Image & Audio files (*.png;*.wav;...)|*.png;*.bmp;*.jpg;" + audioFiles + "|" +
-						"Image files|*.png;*.bmp;*.jpg;|" +
-						"Audio files (*.wav;*.mp3;...)|" + audioFiles + "|"
-						) + "All files|*.*";
-					dialog.FilterIndex = 0;
-					dialog.Title = "Choose " + (input ? "input" : "output") + " file";
-					dialog.CheckFileExists = input;
-					if (currentPath != string.Empty) {
-						try {
-							dialog.FileName = Path.GetFileName(currentPath);
-						}
-						catch { }
-						try {
-							dialog.InitialDirectory = Path.GetDirectoryName(currentPath);
-						}
-						catch {
-							dialog.InitialDirectory = lastFilePath;
-						}
-					}
-					else {
-						dialog.InitialDirectory = lastFilePath;
-					}
-					var result = dialog.ShowDialog(this);
-					try {
-						lastFilePath = Path.GetDirectoryName(dialog.FileName);
-					}
-					catch { }
-					if (result.HasValue && result.Value) {
-						return dialog.FileName;
-					}
-					break;
-				}
-			}
-			return null;
-		}
+        private string GetPath(string currentPath, bool input, bool extract)
+        {
+            switch (extract ? Config.Extract.Mode : Config.Convert.Mode)
+            {
+                case InputModes.Folder:
+                    {
+                        System.Windows.Forms.FolderBrowserDialog dialog = new System.Windows.Forms.FolderBrowserDialog();
+                        dialog.ShowNewFolderButton = true;
+                        dialog.Description = "选择 " + (input ? "输入" : "输出") + " 文件夹";
+                        dialog.SelectedPath = currentPath;
+                        if (dialog.SelectedPath == string.Empty)
+                            dialog.SelectedPath = lastFolderPath;
+                        var result = FolderBrowserLauncher.ShowFolderBrowser(dialog);
+                        lastFolderPath = dialog.SelectedPath;
+                        if (result == System.Windows.Forms.DialogResult.OK)
+                        {
+                            return dialog.SelectedPath;
+                        }
+                        break;
+                    }
+                case InputModes.File:
+                    {
+                        FileDialog dialog;
+                        if (input)
+                            dialog = new OpenFileDialog();
+                        else
+                            dialog = new SaveFileDialog();
+                        string audioFiles = "*.wav;*.mp3;*.mp2;*.mpga;*.m4a;*.aac;*.flac;*.ogg;*.wma;*.aif;*.aiff;*.aifc";
+                        dialog.Filter = (extract == input ?
+                            "Xna 文件|*.xnb;*.xwb|" +
+                            "Xnb 文件|*.xnb|" +
+                            "Xwb 文件|*.xwb|" :
+                            "图像和音频文件 (*.png;*.wav;...)|*.png;*.bmp;*.jpg;" + audioFiles + "|" +
+                            "图像文件|*.png;*.bmp;*.jpg;|" +
+                            "音频文件 (*.wav;*.mp3;...)|" + audioFiles + "|"
+                            ) + "所有文件|*.*";
+                        dialog.FilterIndex = 0;
+                        dialog.Title = "选择 " + (input ? "输入" : "输出") + " 文件";
+                        dialog.CheckFileExists = input;
+                        if (currentPath != string.Empty)
+                        {
+                            try
+                            {
+                                dialog.FileName = Path.GetFileName(currentPath);
+                            }
+                            catch { }
+                            try
+                            {
+                                dialog.InitialDirectory = Path.GetDirectoryName(currentPath);
+                            }
+                            catch
+                            {
+                                dialog.InitialDirectory = lastFilePath;
+                            }
+                        }
+                        else
+                        {
+                            dialog.InitialDirectory = lastFilePath;
+                        }
+                        var result = dialog.ShowDialog(this);
+                        try
+                        {
+                            lastFilePath = Path.GetDirectoryName(dialog.FileName);
+                        }
+                        catch { }
+                        if (result.HasValue && result.Value)
+                        {
+                            return dialog.FileName;
+                        }
+                        break;
+                    }
+            }
+            return null;
+        }
 
-		#endregion
-	}
+        #endregion
+
+    }
 }

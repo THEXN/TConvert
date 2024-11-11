@@ -61,7 +61,7 @@ namespace TConvert.Windows {
 		#region Events
 
 		private void OnWindowLoaded(object sender, RoutedEventArgs e) {
-			clientArea.Height = 214 + textBlockDescription.ActualHeight;
+			clientArea.Height = 250 + textBlockDescription.ActualHeight;
 		}
 
 		#endregion

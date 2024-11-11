@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         Title="关于 TConvert" Background="#FFF0F0F0" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" ShowInTaskbar="False" Icon="/Resources/Icons/About.png" SnapsToDevicePixels="True" UseLayoutRounding="True" SizeToContent="WidthAndHeight" Loaded="OnWindowLoaded">
 
-    <Grid x:Name="clientArea" Width="384" Height="270">
+    <Grid x:Name="clientArea" Width="384" Height="294">
         <Rectangle Fill="#FF72B8D8" HorizontalAlignment="Left" Height="103" Margin="-71,-16,0,0" VerticalAlignment="Top" Width="211" RenderTransformOrigin="0.5,0.5">
             <Rectangle.RenderTransform>
                 <TransformGroup>
@@ -17,7 +17,7 @@
         </Rectangle>
         <Image HorizontalAlignment="Left" Height="112" Margin="10,13,0,0" VerticalAlignment="Top" Width="112" Source="/Resources/Logo112.png"/>
         <GroupBox Header="详细信息" Margin="138,10,10,0" VerticalAlignment="Top" BorderBrush="#FFA9B1B6" Height="160">
-            <Grid>
+            <Grid Height="130">
                 <Label x:Name="labelVersion" Content="1.0.0.1" HorizontalAlignment="Left" Margin="72,26,0,0" VerticalAlignment="Top"/>
                 <Label x:Name="labelBuildDate" Content="2024年1111日" HorizontalAlignment="Left" Margin="72,52,0,0" VerticalAlignment="Top"/>
                 <Label HorizontalAlignment="Left" Margin="72,78,-4,0" VerticalAlignment="Top">
@@ -31,7 +31,7 @@
                 <Label Content="肝帝熙恩" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="72,104,0,0"/>
             </Grid>
         </GroupBox>
-        <GroupBox Header="描述" Margin="10,160,10,40" BorderBrush="#FFA9B1B6">
+        <GroupBox Header="描述" Margin="10,160,10,44" BorderBrush="#FFA9B1B6">
             <TextBlock x:Name="textBlockDescription" TextWrapping="WrapWithOverflow" Text="一个用于管理 Terraria 内容资源的组合工具。转换、提取、备份和恢复。TExtract 的非官方续集。" Margin="4" Padding="4" VerticalAlignment="Top"/>
         </GroupBox>
         <Button Content="关闭" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="80" IsDefault="True" IsCancel="True"/>
